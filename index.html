@@ -8,25 +8,77 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script>
-        // CONFIGURATION: CHANGE THIS DATE PER HOSPITAL UNIT
-        const EXPIRATION_DATE = new Date("2026-03-01"); 
-        
-        const LOCK_MESSAGE = "This Unit License has expired. Please contact Nursing Administration.";
+        // 1. YOUR MASTER LIST OF HOSPITALS/UNITS
+        const CLIENT_DATABASE = {
+            "DEMO": "2030-01-01",
+            "MASTER": "2099-12-31",
+            "MERCY_ICU": "2026-03-01", // Example Unit
+        };
+
         const RENEW_LINK = "mailto:alex@consciousgrowth.live?subject=Renew Vital Signs Protocol";
 
         document.addEventListener("DOMContentLoaded", function() {
-            const now = new Date();
-            if (now > EXPIRATION_DATE) {
+            // 2. GET LICENSE CODE FROM URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const licenseCode = urlParams.get('license');
+
+            let isLocked = true;
+            let message = "No valid Unit License detected. Please use the authorized link.";
+
+            // Check URL Code
+            if (licenseCode && CLIENT_DATABASE[licenseCode]) {
+                const expirationDate = new Date(CLIENT_DATABASE[licenseCode]);
+                const now = new Date();
+                
+                if (now < expirationDate) {
+                    isLocked = false;
+                    localStorage.setItem('vitals_license', licenseCode);
+                } else {
+                    message = `Unit License '${licenseCode}' expired on ${expirationDate.toDateString()}.`;
+                }
+            } 
+            // Check Saved Code
+            else if (localStorage.getItem('vitals_license')) {
+                const savedCode = localStorage.getItem('vitals_license');
+                if (CLIENT_DATABASE[savedCode] && new Date() < new Date(CLIENT_DATABASE[savedCode])) {
+                    isLocked = false;
+                }
+            }
+
+            if (isLocked) {
                 document.body.innerHTML = `
                     <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-center; background:#0f172a; color:white; font-family:sans-serif; text-align:center; padding:20px;">
                         <div style="font-size:40px; margin-bottom:20px;">🏥</div>
                         <h1 style="font-size:24px; font-weight:bold; margin-bottom:10px;">License Expired</h1>
-                        <p style="color:#94a3b8; margin-bottom:30px;">${LOCK_MESSAGE}</p>
-                        <a href="${RENEW_LINK}" style="background:#14b8a6; color:#0f172a; text-decoration:none; padding:15px 30px; border-radius:8px; font-weight:bold;">Contact Vendor to Renew</a>
+                        <p style="color:#94a3b8; margin-bottom:30px; max-width:400px; line-height:1.5;">${message}</p>
+                        
+                        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin-bottom:30px; width:100%; max-width:300px; border:1px solid rgba(255,255,255,0.1);">
+                            <p style="font-size:10px; text-transform:uppercase; margin-bottom:8px; color:#cbd5e1; letter-spacing:1px; font-family:monospace;">Manual Unit Code</p>
+                            <input type="text" id="manualCode" placeholder="ENTER CODE" style="width:100%; padding:12px; border-radius:6px; border:none; background:rgba(0,0,0,0.3); color:white; font-weight:bold; text-align:center; text-transform:uppercase; margin-bottom:10px; outline:none; border:1px solid #334155; font-family:monospace;">
+                            <button onclick="checkManual()" style="display:block; width:100%; padding:12px; background:#14b8a6; color:#0f172a; border:none; border-radius:6px; font-weight:bold; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Authorize</button>
+                        </div>
+
+                        <a href="${RENEW_LINK}" style="color:#14b8a6; text-decoration:none; font-size:12px; border-bottom:1px solid #14b8a6;">Contact Vendor</a>
                     </div>
                 `;
             }
         });
+
+        window.checkManual = function() {
+            const input = document.getElementById('manualCode').value.trim().toUpperCase();
+            if (CLIENT_DATABASE[input]) {
+                const now = new Date();
+                const exp = new Date(CLIENT_DATABASE[input]);
+                if (now < exp) {
+                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?license=" + input;
+                    window.location.href = newUrl;
+                } else {
+                    alert("Unit License expired.");
+                }
+            } else {
+                alert("Invalid Unit Code.");
+            }
+        }
     </script>
 
     <script>
