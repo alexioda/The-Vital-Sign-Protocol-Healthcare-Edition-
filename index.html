@@ -12,7 +12,8 @@
         const CLIENT_DATABASE = {
             "DEMO": "2030-01-01",
             "MASTER": "2099-12-31",
-            "MERCY_ICU": "2026-03-01", // Example Unit
+            "GUMROAD_2026": "2027-01-01", // Gumroad Buyers (Valid thru 2026)
+            "MERCY_ICU": "2026-04-01",    // Example Hospital Unit
         };
 
         const RENEW_LINK = "mailto:alex@consciousgrowth.live?subject=Renew Vital Signs Protocol";
@@ -275,8 +276,8 @@
     <script>
         let currentPage = 0;
         const totalPages = 6;
-        function showPage(i) { document.querySelectorAll('.page').forEach((p, idx) => { p.classList.remove('active'); if(idx===i) setTimeout(()=>p.classList.add('active'),50); }); currentPage = i; document.getElementById('main-content').scrollTop = 0; }
-        function nextPage() { if(currentPage < totalPages-1) showPage(currentPage+1); }
+        function showPage(index) { document.querySelectorAll('.page').forEach((p, i) => { p.classList.remove('active'); if(i === index) setTimeout(() => p.classList.add('active'), 50); }); currentPage = index; document.getElementById('main-content').scrollTop = 0; }
+        function nextPage() { if(currentPage < totalPages - 1) showPage(currentPage + 1); }
         function updateGauge(val) { const txt = document.getElementById('gauge-text'); const num = document.getElementById('pressure-val'); num.innerText = val + "%"; if(val > 70) { txt.innerHTML = "STATUS: <span class='text-rose-500 font-bold'>CRITICAL (Risk of Error)</span>"; } else { txt.innerHTML = "STATUS: STABLE"; } }
         function selectTrap(el) { document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); document.getElementById('trap-continue').classList.remove('hidden'); }
         function revealRegulators(zone) { document.getElementById('sensation-text').innerText = zone + " DETECTED."; document.getElementById('regulator-menu').classList.remove('hidden'); setTimeout(() => document.getElementById('regulator-menu').scrollIntoView({behavior:'smooth'}), 100); }
