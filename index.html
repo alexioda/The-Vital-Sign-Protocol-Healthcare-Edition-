@@ -8,38 +8,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <script>
-        // 1. YOUR MASTER LIST OF HOSPITALS/UNITS
+        // MASTER LIST OF UNITS/HOSPITALS
         const CLIENT_DATABASE = {
             "DEMO": "2030-01-01",
             "MASTER": "2099-12-31",
-            "GUMROAD_2026": "2027-01-01", // Gumroad Buyers (Valid thru 2026)
+            "GUMROAD_2026": "2027-01-01", // Gumroad Buyers
             "MERCY_ICU": "2026-04-01",    // Example Hospital Unit
         };
 
         const RENEW_LINK = "mailto:alex@consciousgrowth.live?subject=Renew Vital Signs Protocol";
 
         document.addEventListener("DOMContentLoaded", function() {
-            // 2. GET LICENSE CODE FROM URL
             const urlParams = new URLSearchParams(window.location.search);
             const licenseCode = urlParams.get('license');
-
             let isLocked = true;
             let message = "No valid Unit License detected. Please use the authorized link.";
 
-            // Check URL Code
             if (licenseCode && CLIENT_DATABASE[licenseCode]) {
                 const expirationDate = new Date(CLIENT_DATABASE[licenseCode]);
-                const now = new Date();
-                
-                if (now < expirationDate) {
+                if (new Date() < expirationDate) {
                     isLocked = false;
                     localStorage.setItem('vitals_license', licenseCode);
                 } else {
                     message = `Unit License '${licenseCode}' expired on ${expirationDate.toDateString()}.`;
                 }
-            } 
-            // Check Saved Code
-            else if (localStorage.getItem('vitals_license')) {
+            } else if (localStorage.getItem('vitals_license')) {
                 const savedCode = localStorage.getItem('vitals_license');
                 if (CLIENT_DATABASE[savedCode] && new Date() < new Date(CLIENT_DATABASE[savedCode])) {
                     isLocked = false;
@@ -52,13 +45,11 @@
                         <div style="font-size:40px; margin-bottom:20px;">🏥</div>
                         <h1 style="font-size:24px; font-weight:bold; margin-bottom:10px;">License Expired</h1>
                         <p style="color:#94a3b8; margin-bottom:30px; max-width:400px; line-height:1.5;">${message}</p>
-                        
                         <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin-bottom:30px; width:100%; max-width:300px; border:1px solid rgba(255,255,255,0.1);">
                             <p style="font-size:10px; text-transform:uppercase; margin-bottom:8px; color:#cbd5e1; letter-spacing:1px; font-family:monospace;">Manual Unit Code</p>
                             <input type="text" id="manualCode" placeholder="ENTER CODE" style="width:100%; padding:12px; border-radius:6px; border:none; background:rgba(0,0,0,0.3); color:white; font-weight:bold; text-align:center; text-transform:uppercase; margin-bottom:10px; outline:none; border:1px solid #334155; font-family:monospace;">
                             <button onclick="checkManual()" style="display:block; width:100%; padding:12px; background:#14b8a6; color:#0f172a; border:none; border-radius:6px; font-weight:bold; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Authorize</button>
                         </div>
-
                         <a href="${RENEW_LINK}" style="color:#14b8a6; text-decoration:none; font-size:12px; border-bottom:1px solid #14b8a6;">Contact Vendor</a>
                     </div>
                 `;
@@ -68,17 +59,12 @@
         window.checkManual = function() {
             const input = document.getElementById('manualCode').value.trim().toUpperCase();
             if (CLIENT_DATABASE[input]) {
-                const now = new Date();
                 const exp = new Date(CLIENT_DATABASE[input]);
-                if (now < exp) {
+                if (new Date() < exp) {
                     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?license=" + input;
                     window.location.href = newUrl;
-                } else {
-                    alert("Unit License expired.");
-                }
-            } else {
-                alert("Invalid Unit Code.");
-            }
+                } else { alert("Unit License expired."); }
+            } else { alert("Invalid Unit Code."); }
         }
     </script>
 
@@ -87,12 +73,7 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['"Inter"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] },
-                    colors: {
-                        slate: { 800: '#1e293b', 900: '#0f172a' },
-                        teal: { 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488' }, // Scrub Teal
-                        rose: { 500: '#f43f5e' }, // Code Red
-                        blue: { 500: '#3b82f6' }  // Code Blue
-                    },
+                    colors: { slate: { 800: '#1e293b', 900: '#0f172a' }, teal: { 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488' }, rose: { 500: '#f43f5e' }, blue: { 500: '#3b82f6' } },
                     animation: { 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
@@ -262,7 +243,7 @@
                     <h2 class="text-4xl font-bold text-slate-900 mb-4">Vitals Checked.</h2>
                     <div class="medical-box mb-8 shadow-sm">"Self-care is not a luxury. It is a sterile field for your mind. Protect it like you protect your patient."</div>
                     <div class="space-y-4 max-w-sm mx-auto">
-                        <a href="https://app.consciousgrowth.live" target="_blank" class="block bg-slate-900 text-white p-4 rounded-lg hover:bg-teal-600 transition-colors shadow-lg group">
+                        <a href="https://app.liveadaptiv.com" target="_blank" class="block bg-slate-900 text-white p-4 rounded-lg hover:bg-teal-600 transition-colors shadow-lg group">
                             <div class="flex justify-between items-center"><div class="text-left"><p class="text-xs text-teal-300 font-bold tracking-wider">DIGITAL PPE</p><p class="font-bold text-lg">Open Adaptiv App</p></div><span class="group-hover:translate-x-1 transition-transform">→</span></div>
                         </a>
                     </div>
@@ -276,8 +257,8 @@
     <script>
         let currentPage = 0;
         const totalPages = 6;
-        function showPage(index) { document.querySelectorAll('.page').forEach((p, i) => { p.classList.remove('active'); if(i === index) setTimeout(() => p.classList.add('active'), 50); }); currentPage = index; document.getElementById('main-content').scrollTop = 0; }
-        function nextPage() { if(currentPage < totalPages - 1) showPage(currentPage + 1); }
+        function showPage(i) { document.querySelectorAll('.page').forEach((p, idx) => { p.classList.remove('active'); if(idx===i) setTimeout(()=>p.classList.add('active'),50); }); currentPage = i; document.getElementById('main-content').scrollTop = 0; }
+        function nextPage() { if(currentPage < totalPages-1) showPage(currentPage+1); }
         function updateGauge(val) { const txt = document.getElementById('gauge-text'); const num = document.getElementById('pressure-val'); num.innerText = val + "%"; if(val > 70) { txt.innerHTML = "STATUS: <span class='text-rose-500 font-bold'>CRITICAL (Risk of Error)</span>"; } else { txt.innerHTML = "STATUS: STABLE"; } }
         function selectTrap(el) { document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); document.getElementById('trap-continue').classList.remove('hidden'); }
         function revealRegulators(zone) { document.getElementById('sensation-text').innerText = zone + " DETECTED."; document.getElementById('regulator-menu').classList.remove('hidden'); setTimeout(() => document.getElementById('regulator-menu').scrollIntoView({behavior:'smooth'}), 100); }
