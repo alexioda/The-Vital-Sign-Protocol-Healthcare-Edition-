@@ -6,15 +6,17 @@
     <title>The Vital Sign Protocol | RPC Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-
+    
     <script>
+        // MASTER LIST FOR RPC
         const CLIENT_DATABASE = { "DEMO": "2030-01-01", "RPC_STAFF": "2030-01-01" };
+        
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             const licenseCode = urlParams.get('license');
             let valid = false;
             
+            // Check URL or LocalStorage
             if ((licenseCode && CLIENT_DATABASE[licenseCode]) || (localStorage.getItem('vitals_license') && CLIENT_DATABASE[localStorage.getItem('vitals_license')])) {
                 valid = true;
             }
@@ -65,15 +67,16 @@
         .card.selected { border-color: #14b8a6; background-color: #f0fdfa; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(20, 184, 166, 0.1); }
         .medical-box { border-left: 4px solid #14b8a6; background: #f0fdfa; padding: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #0f172a; line-height: 1.6; }
         
+        /* Custom Inputs */
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #0f172a; cursor: pointer; margin-top: -8px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px; }
+        
         /* Lens Buttons */
         .lens-btn { border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s; }
         .lens-btn.active-1 { background: #fff1f2; border-color: #f43f5e; color: #be123c; } /* Victim */
         .lens-btn.active-2 { background: #f8fafc; border-color: #94a3b8; color: #475569; } /* Observer */
         .lens-btn.active-3 { background: #f0fdfa; border-color: #14b8a6; color: #0f766e; } /* Architect */
-
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #0f172a; cursor: pointer; margin-top: -8px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased h-screen flex flex-col md:flex-row overflow-hidden">
@@ -111,7 +114,7 @@
             <div class="flex items-center gap-4"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-teal-500/30 text-teal-500 text-xs">4</span><p>Spirit (The Spark)</p></div>
         </nav>
         <div class="mt-auto pt-8 border-t border-slate-800 text-[10px] tracking-widest text-slate-500 font-mono relative z-10">
-            v6.0 | RPC ULTIMATE
+            v5.0 | ROCKLAND PSYCHIATRIC
         </div>
     </aside>
 
@@ -133,12 +136,10 @@
 
             <!-- STEP 1: BIOLOGY & SEESAW -->
             <div id="p1" class="page">
-                <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
-                </button>
                 <h2 class="text-3xl font-bold text-slate-900 mb-3 tracking-tight">1. The Biology</h2>
                 <p class="text-slate-500 mb-8 text-sm leading-relaxed">Your mindset determines your blood chemistry. We must identify the leak.</p>
                 
+                <!-- The Seesaw -->
                 <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm text-center mb-10">
                     <h3 class="font-mono text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">The Hormonal Seesaw</h3>
                     <svg width="100%" height="120" viewBox="0 0 400 120" class="mb-6">
@@ -161,27 +162,43 @@
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <p class="font-bold text-xs uppercase tracking-widest text-slate-800">Identify & Discharge:</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <button onclick="runProtocol('squeeze')" class="p-5 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group transition-all">
-                            <span class="text-3xl block mb-3">⚡</span>
-                            <span class="font-bold text-sm text-slate-900 block mb-1">Discharge</span>
-                            <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Tension</span>
-                        </button>
-                        <button onclick="runProtocol('anchor')" class="p-5 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group transition-all">
-                            <span class="text-3xl block mb-3">🧼</span>
-                            <span class="font-bold text-sm text-slate-900 block mb-1">Scrub In</span>
-                            <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Transition</span>
-                        </button>
+                <p class="font-bold text-xs uppercase tracking-widest text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                    Select Your Cortisol Trigger:
+                </p>
+                <div class="space-y-3">
+                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-1"><h3 class="font-bold text-sm text-slate-800">The Perfectionist</h3><span class="text-rose-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity">🎯</span></div>
+                        <p class="text-xs text-slate-500 leading-relaxed">"If I miss one detail, I am unsafe or a patient gets hurt."</p>
+                    </div>
+                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-1"><h3 class="font-bold text-sm text-slate-800">The Over-Committer</h3><span class="text-rose-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity">⏱️</span></div>
+                        <p class="text-xs text-slate-500 leading-relaxed">"I save everyone else but drain myself."</p>
+                    </div>
+                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
+                        <div class="flex justify-between items-center mb-1"><h3 class="font-bold text-sm text-slate-800">The Imposter</h3><span class="text-rose-500 text-lg opacity-80 group-hover:opacity-100 transition-opacity">🎭</span></div>
+                        <p class="text-xs text-slate-500 leading-relaxed">"I don't actually know how to handle this acuity."</p>
                     </div>
                 </div>
 
-                <div id="protocol-display" class="hidden bg-slate-900 text-white p-8 rounded-2xl text-center mt-8 shadow-xl relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-teal-500"></div>
-                    <h3 id="proto-title" class="text-teal-400 font-mono font-bold text-xs tracking-widest uppercase mb-4"></h3>
-                    <p id="proto-text" class="text-sm leading-relaxed mb-8 font-medium text-slate-300"></p>
-                    <button onclick="nextPage()" class="bg-teal-500 text-slate-900 px-8 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-teal-400 transition-colors shadow-lg">Hardware Stable &rarr;</button>
+                <div id="somatic-tools" class="hidden mt-10 border-t border-slate-200 pt-8 animate-pulse-once">
+                    <p class="font-bold text-xs uppercase tracking-widest text-teal-600 mb-4 text-center">Protocol: Hardware Reboot</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="runProtocol('squeeze')" class="p-4 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group">
+                            <span class="text-2xl block mb-2">⚡</span>
+                            <span class="font-bold text-sm text-slate-900 block">Discharge</span>
+                        </button>
+                        <button onclick="runProtocol('anchor')" class="p-4 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group">
+                            <span class="text-2xl block mb-2">🧼</span>
+                            <span class="font-bold text-sm text-slate-900 block">Scrub In</span>
+                        </button>
+                    </div>
+                    
+                    <div id="protocol-display" class="hidden bg-slate-900 text-white p-6 rounded-xl text-center mt-6 shadow-xl">
+                        <h3 id="proto-title" class="text-teal-400 font-mono font-bold text-xs tracking-widest uppercase mb-4"></h3>
+                        <p id="proto-text" class="text-sm leading-relaxed mb-6 font-medium text-slate-300"></p>
+                        <button onclick="nextPage()" class="bg-teal-500 text-slate-900 px-6 py-2 rounded-full font-bold text-xs uppercase hover:bg-teal-400 transition-colors">Hardware Stable &rarr;</button>
+                    </div>
                 </div>
             </div>
 
@@ -267,10 +284,10 @@
                     </div>
                 </div>
                 
-                <div class="mt-8 text-center"><button onclick="nextPage()" class="text-slate-400 hover:text-slate-900 text-xs font-bold border-b border-transparent hover:border-slate-900 transition-colors">PROCEED TO SPARK &rarr;</button></div>
+                <div class="mt-8 text-center"><button onclick="nextPage()" class="text-slate-400 hover:text-slate-900 text-xs font-bold border-b border-transparent hover:border-slate-900 transition-colors">PROCEED TO MEANING &rarr;</button></div>
             </div>
 
-            <!-- STEP 4: MEANING (THE SPARK + LOBSTER) -->
+            <!-- STEP 4: MEANING & RESOURCES -->
             <div id="p4" class="page">
                 <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
@@ -292,17 +309,51 @@
                     <button onclick="ignitePurpose()" class="w-full mt-6 bg-teal-600 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase hover:bg-teal-500 transition-all shadow-md">Ignite Purpose</button>
                 </div>
 
-                <!-- The Lobster Principle -->
+                <!-- The Lobster Principle & Oath -->
                 <div id="lobster-principle" class="hidden text-center mt-12 animate-pulse-once">
                     <div class="bg-teal-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-lg"><span class="text-4xl">🦞</span></div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 text-left text-sm leading-relaxed text-slate-600 mb-10 shadow-sm">
-                        "A lobster is a soft animal in a rigid shell. As it grows, the shell becomes tight and painful. The lobster feels stress. <br><br>It does not take a pill to numb the stress. It recognizes the pain as a signal. It goes under a rock (Rest), sheds the shell (Vulnerability), and grows a new one.<br><br><strong>Now that you remember your 'Why', the stress is no longer just pain. It is the biological trigger for your expansion.</strong>"
+                        "A lobster only grows because its shell becomes tight and painful. The pressure you feel right now isn't a sign that you are breaking. It is a biological signal that you are <strong>Molting</strong>. You are expanding your capacity."
                     </div>
-                    <div class="bg-slate-900 text-white p-6 rounded-2xl text-center shadow-xl">
+                    
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl text-center shadow-xl mb-12">
                         <p class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-3">Your Sovereign Oath</p>
                         <p id="final-oath" class="font-serif text-lg italic text-slate-100 leading-relaxed"></p>
                     </div>
-                    <button onclick="location.reload()" class="mt-10 bg-slate-200 text-slate-700 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-slate-300 transition-all">Reset For Next Shift</button>
+
+                    <!-- PROFESSIONAL RESOURCES (Safe Upsells) -->
+                    <div class="border-t border-slate-200 pt-8">
+                        <p class="font-bold text-xs uppercase tracking-widest text-slate-400 mb-6">Additional Clinical Resources</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Link 1: Free App -->
+                            <a href="https://app.liveadaptiv.com" target="_blank" class="p-4 bg-white border border-slate-200 rounded-xl hover:border-teal-500 transition-all group text-left shadow-sm">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="p-1.5 bg-teal-50 rounded text-teal-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+                                    <span class="font-bold text-xs text-slate-900 uppercase tracking-wide">Daily Tool</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500">Get the free mobile app for daily regulation.</p>
+                            </a>
+
+                            <!-- Link 2: LinkedIn -->
+                            <a href="https://www.linkedin.com/in/alexioda" target="_blank" class="p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-500 transition-all group text-left shadow-sm">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="p-1.5 bg-blue-50 rounded text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+                                    <span class="font-bold text-xs text-slate-900 uppercase tracking-wide">Connect</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500">Join the professional network.</p>
+                            </a>
+                        </div>
+                        
+                        <!-- Link 3: The Book -->
+                        <a href="https://alexioda.gumroad.com/l/roxaxf" target="_blank" class="block mt-4 p-4 bg-slate-50 border border-dashed border-slate-300 rounded-xl hover:bg-white hover:border-slate-400 transition-all text-center">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                                Advanced Protocol: The Field Guide
+                            </span>
+                        </a>
+                    </div>
+
+                    <button onclick="location.reload()" class="mt-12 text-slate-400 underline text-xs hover:text-slate-600">Reset for Next Shift</button>
                 </div>
             </div>
 
@@ -320,7 +371,7 @@
         function selectTrap(el) { 
             document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected')); 
             el.classList.add('selected'); 
-            document.getElementById('btn-p1').classList.remove('hidden'); 
+            document.getElementById('somatic-tools').classList.remove('hidden'); // SHOW SOMATIC TOOLS
         }
         
         function runProtocol(type) { 
