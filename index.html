@@ -3,68 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Vital Sign Protocol | Clinician Resilience</title>
+    <title>The Vital Sign Protocol | RPC Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
-        // MASTER LIST OF UNITS/HOSPITALS
-        const CLIENT_DATABASE = {
-            "DEMO": "2030-01-01",
-            "MASTER": "2099-12-31",
-            "GUMROAD_2026": "2027-01-01", // Gumroad Buyers
-            "MERCY_ICU": "2026-04-01",    // Example Hospital Unit
-        };
-
-        const RENEW_LINK = "mailto:alex@consciousgrowth.live?subject=Renew Vital Signs Protocol";
-
+        const CLIENT_DATABASE = { "DEMO": "2030-01-01", "RPC_STAFF": "2030-01-01" };
         document.addEventListener("DOMContentLoaded", function() {
             const urlParams = new URLSearchParams(window.location.search);
             const licenseCode = urlParams.get('license');
-            let isLocked = true;
-            let message = "No valid Unit License detected. Please use the authorized link.";
-
-            if (licenseCode && CLIENT_DATABASE[licenseCode]) {
-                const expirationDate = new Date(CLIENT_DATABASE[licenseCode]);
-                if (new Date() < expirationDate) {
-                    isLocked = false;
-                    localStorage.setItem('vitals_license', licenseCode);
-                } else {
-                    message = `Unit License '${licenseCode}' expired on ${expirationDate.toDateString()}.`;
-                }
-            } else if (localStorage.getItem('vitals_license')) {
-                const savedCode = localStorage.getItem('vitals_license');
-                if (CLIENT_DATABASE[savedCode] && new Date() < new Date(CLIENT_DATABASE[savedCode])) {
-                    isLocked = false;
-                }
+            let valid = false;
+            
+            if ((licenseCode && CLIENT_DATABASE[licenseCode]) || (localStorage.getItem('vitals_license') && CLIENT_DATABASE[localStorage.getItem('vitals_license')])) {
+                valid = true;
             }
-
-            if (isLocked) {
-                document.body.innerHTML = `
-                    <div style="height:100vh; display:flex; flex-direction:column; align-items:center; justify-center; background:#0f172a; color:white; font-family:sans-serif; text-align:center; padding:20px;">
-                        <div style="font-size:40px; margin-bottom:20px;">🏥</div>
-                        <h1 style="font-size:24px; font-weight:bold; margin-bottom:10px;">License Expired</h1>
-                        <p style="color:#94a3b8; margin-bottom:30px; max-width:400px; line-height:1.5;">${message}</p>
-                        <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:12px; margin-bottom:30px; width:100%; max-width:300px; border:1px solid rgba(255,255,255,0.1);">
-                            <p style="font-size:10px; text-transform:uppercase; margin-bottom:8px; color:#cbd5e1; letter-spacing:1px; font-family:monospace;">Manual Unit Code</p>
-                            <input type="text" id="manualCode" placeholder="ENTER CODE" style="width:100%; padding:12px; border-radius:6px; border:none; background:rgba(0,0,0,0.3); color:white; font-weight:bold; text-align:center; text-transform:uppercase; margin-bottom:10px; outline:none; border:1px solid #334155; font-family:monospace;">
-                            <button onclick="checkManual()" style="display:block; width:100%; padding:12px; background:#14b8a6; color:#0f172a; border:none; border-radius:6px; font-weight:bold; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-size:12px;">Authorize</button>
-                        </div>
-                        <a href="${RENEW_LINK}" style="color:#14b8a6; text-decoration:none; font-size:12px; border-bottom:1px solid #14b8a6;">Contact Vendor</a>
-                    </div>
-                `;
+            
+            if (!valid) {
+                document.getElementById('app-interface').style.display = 'none';
+                document.getElementById('lock-screen').style.display = 'flex';
+            } else {
+                document.getElementById('app-interface').style.display = 'flex';
+                document.getElementById('lock-screen').style.display = 'none';
+                if(licenseCode) localStorage.setItem('vitals_license', licenseCode);
             }
         });
 
-        window.checkManual = function() {
+        function unlockSystem() {
             const input = document.getElementById('manualCode').value.trim().toUpperCase();
-            if (CLIENT_DATABASE[input]) {
-                const exp = new Date(CLIENT_DATABASE[input]);
-                if (new Date() < exp) {
-                    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?license=" + input;
-                    window.location.href = newUrl;
-                } else { alert("Unit License expired."); }
-            } else { alert("Invalid Unit Code."); }
+            if (CLIENT_DATABASE[input]) { 
+                localStorage.setItem('vitals_license', input); 
+                location.reload(); 
+            } else { 
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
         }
     </script>
 
@@ -73,7 +45,13 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['"Inter"', 'sans-serif'], mono: ['"JetBrains Mono"', 'monospace'] },
-                    colors: { slate: { 800: '#1e293b', 900: '#0f172a' }, teal: { 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488' }, rose: { 500: '#f43f5e' }, blue: { 500: '#3b82f6' } },
+                    colors: { 
+                        slate: { 800: '#1e293b', 900: '#0f172a' }, 
+                        teal: { 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488' }, 
+                        rose: { 500: '#f43f5e', 600: '#e11d48' }, 
+                        blue: { 500: '#3b82f6' },
+                        amber: { 500: '#f59e0b', 600: '#d97706' }
+                    },
                     animation: { 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
@@ -81,173 +59,250 @@
     </script>
 
     <style>
-        .page { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .page { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
         .page.active { display: block; opacity: 1; }
         .card { border: 1px solid #e2e8f0; transition: all 0.2s; cursor: pointer; }
-        .card.selected { border-color: #14b8a6; background-color: #f0fdfa; transform: scale(1.01); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .card.selected { border-color: #14b8a6; background-color: #f0fdfa; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(20, 184, 166, 0.1); }
+        .medical-box { border-left: 4px solid #14b8a6; background: #f0fdfa; padding: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #0f172a; line-height: 1.6; }
+        
+        /* Lens Buttons */
+        .lens-btn { border: 1px solid #e2e8f0; color: #64748b; transition: all 0.2s; }
+        .lens-btn.active-1 { background: #fff1f2; border-color: #f43f5e; color: #be123c; } /* Victim */
+        .lens-btn.active-2 { background: #f8fafc; border-color: #94a3b8; color: #475569; } /* Observer */
+        .lens-btn.active-3 { background: #f0fdfa; border-color: #14b8a6; color: #0f766e; } /* Architect */
+
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #0f172a; cursor: pointer; margin-top: -6px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #0f172a; cursor: pointer; margin-top: -8px; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: #cbd5e1; border-radius: 2px; }
-        .medical-box { border-left: 4px solid #14b8a6; background: #f0fdfa; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0f172a; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased h-screen flex flex-col md:flex-row overflow-hidden">
 
-    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center z-50">
-        <span class="font-bold tracking-tight">VITAL SIGN PROTOCOL</span>
-        <div class="text-[10px] bg-teal-500 text-slate-900 px-2 py-1 rounded font-bold">STAFF ONLY</div>
+    <!-- LOCK SCREEN -->
+    <div id="lock-screen" class="hidden flex-col items-center justify-center bg-slate-900 text-white h-screen w-full px-6">
+        <div class="text-5xl mb-6">🏥</div>
+        <h1 class="font-bold text-3xl mb-2 tracking-tight text-center">UNIT LOCKED</h1>
+        <p class="text-slate-400 text-xs mb-8 font-mono tracking-widest text-center">AUTHORIZED CLINICAL PERSONNEL ONLY</p>
+        <div class="w-full max-w-sm">
+            <input type="text" id="manualCode" placeholder="ENTER UNIT CODE" class="w-full p-4 border border-slate-700 bg-slate-800 text-white font-bold text-center tracking-widest rounded-lg mb-4 focus:outline-none focus:border-teal-500 font-mono transition-colors">
+            <button onclick="unlockSystem()" class="w-full bg-teal-500 text-slate-900 font-bold uppercase tracking-widest text-sm py-4 rounded-lg hover:bg-teal-400 transition-all shadow-lg shadow-teal-500/20">ACCESS PROTOCOL</button>
+            <p id="error-msg" class="text-rose-500 text-xs text-center mt-4 hidden font-mono animate-pulse">INVALID CODE DETECTED</p>
+        </div>
     </div>
 
-    <aside class="hidden md:flex flex-col w-72 bg-slate-900 text-slate-300 h-full p-8 flex-shrink-0">
-        <div class="mb-12">
-            <h1 class="text-2xl font-bold text-white mb-2">THE VITAL SIGN<br>PROTOCOL</h1>
-            <div class="h-1 w-12 bg-teal-500 mb-4"></div>
-            <p class="text-[10px] font-mono text-teal-400">CLINICIAN RESILIENCE OS</p>
+    <!-- MOBILE HEADER -->
+    <div class="md:hidden bg-slate-900 text-white p-4 flex justify-between items-center z-50 flex-shrink-0 shadow-md">
+        <span class="font-bold tracking-tight text-sm">VITAL SIGN PROTOCOL</span>
+        <div class="text-[10px] bg-teal-500 text-slate-900 px-2 py-1 rounded font-bold tracking-widest">RPC</div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="hidden md:flex flex-col w-80 bg-slate-900 text-slate-300 h-full p-8 flex-shrink-0 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-3xl"></div>
+        <div class="mb-12 relative z-10">
+            <h1 class="text-3xl font-bold text-white mb-3 tracking-tight leading-tight">THE VITAL SIGN<br>PROTOCOL</h1>
+            <div class="h-1 w-12 bg-teal-500 mb-5"></div>
+            <p class="text-[10px] font-mono text-teal-400 tracking-widest">INTEGRATED CLINICAL OS</p>
         </div>
-        <nav class="space-y-6 text-sm font-mono text-slate-400">
-            <div class="flex items-center gap-3"><span class="text-teal-500">01</span><p>Triage (Diagnosis)</p></div>
-            <div class="flex items-center gap-3"><span class="text-teal-500">02</span><p>Stabilize (Somatic)</p></div>
-            <div class="flex items-center gap-3"><span class="text-teal-500">03</span><p>Shift (Mindset)</p></div>
-            <div class="flex items-center gap-3"><span class="text-teal-500">04</span><p>Discharge (Action)</p></div>
+        <nav class="space-y-6 text-sm font-mono text-slate-400 relative z-10 flex-1">
+            <div class="flex items-center gap-4"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-teal-500/30 text-teal-500 text-xs">1</span><p>Body (The Hardware)</p></div>
+            <div class="flex items-center gap-4"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-teal-500/30 text-teal-500 text-xs">2</span><p>Mind (The Lens)</p></div>
+            <div class="flex items-center gap-4"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-teal-500/30 text-teal-500 text-xs">3</span><p>Action (The Shield)</p></div>
+            <div class="flex items-center gap-4"><span class="flex items-center justify-center w-6 h-6 rounded-full border border-teal-500/30 text-teal-500 text-xs">4</span><p>Spirit (The Spark)</p></div>
         </nav>
-        <div class="mt-auto pt-8 border-t border-slate-800 text-xs text-slate-600">v2.1 Healthcare Edition</div>
+        <div class="mt-auto pt-8 border-t border-slate-800 text-[10px] tracking-widest text-slate-500 font-mono relative z-10">
+            v6.0 | RPC ULTIMATE
+        </div>
     </aside>
 
-    <main class="flex-1 h-full overflow-y-auto p-6 md:p-12 scroll-smooth" id="main-content">
-        <div class="max-w-2xl mx-auto pb-20">
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 h-full overflow-y-auto p-6 md:p-12 scroll-smooth bg-slate-50 relative" id="main-content">
+        <div class="max-w-xl mx-auto pb-24">
             
+            <!-- STEP 0: INTRO -->
             <div id="p0" class="page active">
-                <div class="text-center mt-10">
-                    <div class="inline-block bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full mb-6">UNIT LICENSE: AUTHORIZED USE ONLY</div>
-                    <h1 class="text-5xl font-bold text-slate-900 mb-6 tracking-tight">Clinician<br>Resilience Check.</h1>
-                    <div class="medical-box text-left my-8 shadow-sm">
-                        "The expectation that we can be immersed in suffering and loss daily and not be touched by it is as unrealistic as expecting to walk through water without getting wet."
-                        <span class="block text-xs font-bold mt-2 text-teal-600">— Rachel Naomi Remen, M.D.</span>
+                <div class="text-center mt-12 md:mt-20">
+                    <div class="inline-block bg-teal-100/50 border border-teal-200 text-teal-800 text-[10px] font-bold px-4 py-1.5 rounded-full mb-8 uppercase tracking-widest">Internal Training Tool</div>
+                    <h1 class="text-5xl md:text-6xl font-bold text-slate-900 mb-6 tracking-tight leading-none">Clinician<br>Resilience.</h1>
+                    <div class="medical-box text-left my-10 shadow-sm rounded-r-xl border-slate-200">
+                        "Stress is not the enemy. Stress is biology acting exactly as it should. The goal is not to numb it, but to metabolize it."
                     </div>
-                    <div class="bg-white p-6 border border-slate-200 rounded-lg shadow-sm text-left relative">
-                        <label class="text-xs font-bold uppercase text-slate-400">Initials / Unit ID</label>
-                        <input type="text" placeholder="Enter ID to Scrub In" class="w-full text-xl font-mono border-b border-slate-300 focus:border-teal-500 outline-none py-2 mt-2">
-                        <div class="flex items-center gap-2 mt-4 text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                            <span class="text-[10px] font-bold uppercase tracking-wide">Anonymous & Confidential. Data not shared with HR.</span>
+                    <button onclick="nextPage()" class="mt-8 w-full bg-slate-900 text-white py-5 rounded-xl font-bold hover:bg-teal-600 hover:shadow-lg hover:shadow-teal-500/20 transition-all text-xs tracking-widest uppercase">INITIATE PROTOCOL</button>
+                </div>
+            </div>
+
+            <!-- STEP 1: BIOLOGY & SEESAW -->
+            <div id="p1" class="page">
+                <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900 mb-3 tracking-tight">1. The Biology</h2>
+                <p class="text-slate-500 mb-8 text-sm leading-relaxed">Your mindset determines your blood chemistry. We must identify the leak.</p>
+                
+                <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm text-center mb-10">
+                    <h3 class="font-mono text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">The Hormonal Seesaw</h3>
+                    <svg width="100%" height="120" viewBox="0 0 400 120" class="mb-6">
+                        <path d="M180 100 L 220 100 L 200 70 Z" fill="#475569" />
+                        <line x1="50" y1="70" x2="350" y2="70" stroke="#334155" stroke-width="4" stroke-linecap="round" />
+                        <rect x="40" y="35" width="80" height="35" fill="#f43f5e" rx="6" />
+                        <text x="80" y="57" text-anchor="middle" fill="white" font-size="11" font-weight="bold">THREAT</text>
+                        <rect x="280" y="35" width="80" height="35" fill="#14b8a6" rx="6" />
+                        <text x="320" y="57" text-anchor="middle" fill="white" font-size="11" font-weight="bold">CHALLENGE</text>
+                    </svg>
+                    <div class="grid grid-cols-2 gap-4 text-left text-xs font-mono">
+                        <div class="p-4 bg-rose-50/50 rounded-xl border border-rose-100">
+                            <strong class="text-rose-600 block mb-2 tracking-wide text-[10px] uppercase">THREAT RESPONSE</strong>
+                            <p class="text-slate-600 leading-relaxed">• Cortisol Release<br>• Vessels Constrict</p>
+                        </div>
+                        <div class="p-4 bg-teal-50/50 rounded-xl border border-teal-100">
+                            <strong class="text-teal-600 block mb-2 tracking-wide text-[10px] uppercase">CHALLENGE RESPONSE</strong>
+                            <p class="text-slate-600 leading-relaxed">• DHEA Release<br>• Vessels Dilate</p>
                         </div>
                     </div>
-                    <button onclick="nextPage()" class="mt-8 w-full bg-slate-900 text-white py-4 rounded-lg font-bold hover:bg-teal-600 transition-colors shadow-lg">INITIATE VITALS CHECK</button>
                 </div>
-            </div>
 
-            <div id="p1" class="page">
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">Step 1: Triage</h2>
-                <p class="text-slate-500 mb-6">What is the source of the hemorrhage? Identify your pattern.</p>
-                <div class="bg-slate-800 text-slate-300 p-6 rounded-lg mb-8 shadow-md">
-                    <div class="flex justify-between items-center mb-4"><span class="text-xs font-bold text-teal-400 uppercase">Internal Pressure Gauge</span><span class="text-xs font-mono" id="pressure-val">50%</span></div>
-                    <input type="range" min="0" max="100" value="50" oninput="updateGauge(this.value)">
-                    <p id="gauge-text" class="text-center mt-4 text-sm font-mono text-white">STATUS: STABLE</p>
-                </div>
-                <p class="font-bold text-sm mb-4">IDENTIFY THE PATTERN:</p>
-                <div class="space-y-3">
-                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
-                        <div class="flex justify-between"><h3 class="font-bold text-sm text-slate-800">The Burden Carrier</h3><span class="text-rose-500 group-hover:scale-110 transition-transform">🚑</span></div>
-                        <p class="text-xs text-slate-500 mt-1">"If I don't hold it all together, everything falls apart." (Over-Functioning)</p>
-                    </div>
-                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
-                        <div class="flex justify-between"><h3 class="font-bold text-sm text-slate-800">The Empty Tank</h3><span class="text-rose-500 group-hover:scale-110 transition-transform">💔</span></div>
-                        <p class="text-xs text-slate-500 mt-1">"I have nothing left to give, but I keep going." (Compassion Fatigue)</p>
-                    </div>
-                    <div class="card p-5 rounded-lg bg-white group hover:shadow-md" onclick="selectTrap(this)">
-                        <div class="flex justify-between"><h3 class="font-bold text-sm text-slate-800">The Iron Clinician</h3><span class="text-rose-500 group-hover:scale-110 transition-transform">🩸</span></div>
-                        <p class="text-xs text-slate-500 mt-1">"I don't have time to pee, eat, or sit." (Self-Neglect)</p>
-                    </div>
-                </div>
-                <div id="trap-continue" class="hidden mt-6 text-center">
-                    <button onclick="nextPage()" class="text-teal-600 font-bold border-b-2 border-teal-600 hover:text-teal-800 transition-colors">Pattern Identified. Stabilize &rarr;</button>
-                </div>
-            </div>
-
-            <div id="p2" class="page">
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">Step 2: Stabilize</h2>
-                <div class="medical-box mb-6 border-l-teal-500"><strong>CLINICAL ALERT:</strong> You cannot provide safe care if your own nervous system is in "Threat Response." You must stabilize first.</div>
-                <div class="flex flex-col items-center mb-8">
-                    <p class="text-xs font-bold uppercase text-slate-400 mb-4">Locate Tension Source</p>
-                    <svg width="120" height="180" viewBox="0 0 100 200" class="drop-shadow-lg">
-                        <path d="M50 10 C 60 10, 65 15, 65 25 C 65 30, 60 35, 50 35 C 40 35, 35 30, 35 25 C 35 15, 40 10, 50 10 M50 35 L 50 80 M50 80 L 20 120 M50 80 L 80 120 M20 45 L 80 45" stroke="#334155" fill="none" stroke-width="2" />
-                        <circle cx="50" cy="25" r="12" fill="transparent" class="cursor-pointer hover:fill-rose-500/50 transition-colors" onclick="revealRegulators('Head')"/><rect x="35" y="40" width="30" height="25" fill="transparent" class="cursor-pointer hover:fill-rose-500/50 transition-colors" onclick="revealRegulators('Chest')"/><rect x="35" y="65" width="30" height="15" fill="transparent" class="cursor-pointer hover:fill-rose-500/50 transition-colors" onclick="revealRegulators('Gut')"/>
-                    </svg>
-                    <p id="sensation-text" class="text-rose-500 font-mono text-xs mt-4 h-4 text-center font-bold">WAITING FOR INPUT...</p>
-                </div>
-                <div id="regulator-menu" class="hidden space-y-4 animate-pulse-once">
+                <div class="space-y-4">
+                    <p class="font-bold text-xs uppercase tracking-widest text-slate-800">Identify & Discharge:</p>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="runProtocol('squeeze')" class="p-4 border rounded-lg hover:border-teal-500 bg-white text-left shadow-sm group">
-                            <span class="text-xl block mb-2 group-hover:scale-110 transition-transform">⚡ Discharge</span><span class="text-[10px] text-slate-500 font-medium">For Anger / Frustration</span>
+                        <button onclick="runProtocol('squeeze')" class="p-5 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group transition-all">
+                            <span class="text-3xl block mb-3">⚡</span>
+                            <span class="font-bold text-sm text-slate-900 block mb-1">Discharge</span>
+                            <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Tension</span>
                         </button>
-                        <button onclick="runProtocol('anchor')" class="p-4 border rounded-lg hover:border-teal-500 bg-white text-left shadow-sm group">
-                            <span class="text-xl block mb-2 group-hover:scale-110 transition-transform">🧼 Scrub In</span><span class="text-[10px] text-slate-500 font-medium">For Overwhelm / Grief</span>
+                        <button onclick="runProtocol('anchor')" class="p-5 border border-slate-200 rounded-xl hover:border-teal-500 hover:bg-teal-50/30 text-left shadow-sm group transition-all">
+                            <span class="text-3xl block mb-3">🧼</span>
+                            <span class="font-bold text-sm text-slate-900 block mb-1">Scrub In</span>
+                            <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wide">For Transition</span>
                         </button>
                     </div>
-                    <div id="protocol-display" class="hidden bg-slate-900 text-white p-6 rounded-lg text-center mt-4 shadow-lg">
-                        <h3 id="proto-title" class="text-teal-400 font-mono font-bold text-sm mb-4"></h3><p id="proto-text" class="text-sm leading-relaxed mb-6 font-medium"></p>
-                        <button onclick="nextPage()" class="bg-teal-500 text-slate-900 px-6 py-2 rounded-full font-bold text-xs uppercase hover:bg-teal-400 transition-colors">Vitals Stable. Proceed &rarr;</button>
-                    </div>
+                </div>
+
+                <div id="protocol-display" class="hidden bg-slate-900 text-white p-8 rounded-2xl text-center mt-8 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-teal-500"></div>
+                    <h3 id="proto-title" class="text-teal-400 font-mono font-bold text-xs tracking-widest uppercase mb-4"></h3>
+                    <p id="proto-text" class="text-sm leading-relaxed mb-8 font-medium text-slate-300"></p>
+                    <button onclick="nextPage()" class="bg-teal-500 text-slate-900 px-8 py-3 rounded-full font-bold text-xs tracking-widest uppercase hover:bg-teal-400 transition-colors shadow-lg">Hardware Stable &rarr;</button>
                 </div>
             </div>
 
+            <!-- STEP 2: THE OPTIC SHIFT (MIND) -->
+            <div id="p2" class="page">
+                <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">2. The Optic Shift</h2>
+                <div class="medical-box mb-8"><strong>COGNITIVE PROTOCOL:</strong> Stress is not the picture; stress is the <em>filter</em> you are viewing it through. Change the lens, change the chemistry.</div>
+                
+                <div class="space-y-6">
+                    <label class="text-[10px] font-bold text-slate-400 block uppercase tracking-wide">The Situation (Neutral Fact)</label>
+                    <input type="text" placeholder="e.g. Low staffing, Rude patient..." class="w-full border-b-2 border-slate-200 py-2 text-slate-800 bg-transparent focus:outline-none focus:border-slate-500 font-medium text-lg">
+                </div>
+
+                <div class="mt-8 space-y-4">
+                    <p class="font-bold text-xs uppercase tracking-widest text-slate-800">Select Your Lens:</p>
+                    
+                    <button onclick="selectLens(1)" id="lens-1" class="lens-btn w-full p-4 rounded-xl text-left flex items-start gap-4 group">
+                        <div class="mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></div>
+                        <div><h3 class="font-bold text-sm">The Victim Lens</h3><p class="text-xs mt-1 opacity-70">"Why is this happening to me? This is unfair." (Draining)</p></div>
+                    </button>
+
+                    <button onclick="selectLens(2)" id="lens-2" class="lens-btn w-full p-4 rounded-xl text-left flex items-start gap-4 group">
+                        <div class="mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg></div>
+                        <div><h3 class="font-bold text-sm">The Observer Lens</h3><p class="text-xs mt-1 opacity-70">"This is a high-pressure situation. I am observing the data." (Neutral)</p></div>
+                    </button>
+
+                    <button onclick="selectLens(3)" id="lens-3" class="lens-btn w-full p-4 rounded-xl text-left flex items-start gap-4 group">
+                        <div class="mt-1"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></div>
+                        <div><h3 class="font-bold text-sm">The Architect Lens</h3><p class="text-xs mt-1 opacity-70">"How can I use this to practice my leadership?" (Fueling)</p></div>
+                    </button>
+                </div>
+
+                <div id="lens-prompt" class="hidden mt-8 animate-pulse-once">
+                    <label class="text-[10px] font-bold text-teal-600 block mb-2 uppercase tracking-wide">Your New Narrative:</label>
+                    <textarea id="lens-input" class="w-full border border-teal-200 rounded p-3 text-sm font-medium h-24 focus:border-teal-500 outline-none bg-teal-50/50" placeholder=""></textarea>
+                    <button onclick="nextPage()" class="w-full mt-4 bg-teal-600 text-white py-3 rounded-lg font-bold hover:bg-teal-700 shadow-md text-xs uppercase tracking-widest">Perspectives Shifted &rarr;</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: BOUNDARIES (ACTION) -->
             <div id="p3" class="page">
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">Step 3: The Shift</h2>
-                <p class="text-slate-500 mb-6">Shift from "Victim" (This is happening to me) to "Professional" (I am handling this).</p>
-                <div class="mb-6">
-                    <label class="text-xs font-bold text-rose-500 block mb-2">CURRENT THOUGHT (DRAINING)</label>
-                    <div class="flex flex-wrap gap-2">
-                        <span onclick="setCatabolic(this, 'I can\'t save everyone')" class="bg-rose-50 border border-rose-200 text-rose-800 text-xs px-3 py-2 rounded cursor-pointer hover:bg-rose-100 transition-colors">"I can't save everyone."</span>
-                        <span onclick="setCatabolic(this, 'Nobody appreciates me')" class="bg-rose-50 border border-rose-200 text-rose-800 text-xs px-3 py-2 rounded cursor-pointer hover:bg-rose-100 transition-colors">"Nobody appreciates this."</span>
-                        <span onclick="setCatabolic(this, 'Why is Admin doing this?')" class="bg-rose-50 border border-rose-200 text-rose-800 text-xs px-3 py-2 rounded cursor-pointer hover:bg-rose-100 transition-colors">"Why is Admin doing this?"</span>
+                <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">3. The Boundary</h2>
+                <p class="text-slate-500 mb-8 text-sm">Protect your license and capacity. Generate the script.</p>
+                
+                <div class="grid grid-cols-3 gap-2 bg-slate-200/60 p-1.5 rounded-xl mb-8">
+                    <button onclick="switchScript('admin')" id="btn-admin" class="py-3 text-[10px] tracking-widest uppercase font-bold rounded-lg bg-white text-slate-900 shadow-sm transition-all">Supervisor</button>
+                    <button onclick="switchScript('patient')" id="btn-patient" class="py-3 text-[10px] tracking-widest uppercase font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all">Patient</button>
+                    <button onclick="switchScript('home')" id="btn-home" class="py-3 text-[10px] tracking-widest uppercase font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all">Airlock</button>
+                </div>
+                
+                <!-- Scripts -->
+                <div id="script-admin" class="bg-white p-8 border border-slate-200 rounded-2xl shadow-md relative">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-teal-500 rounded-l-2xl"></div>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4">Protocol: Capacity Protection</p>
+                    <div class="text-lg leading-relaxed text-slate-800 font-medium">
+                        "I want to ensure this unit remains safe. <br><br>With current acuity, my capacity is maxed. To accept this assignment safely, I need <input type="text" placeholder="[Specific Support]" class="border-b-2 border-teal-500 outline-none w-40 text-center text-teal-700 font-bold bg-transparent placeholder-teal-300">."
                     </div>
                 </div>
-                <div class="text-center mb-6"><button onclick="revealAnabolic()" class="bg-slate-800 text-white px-8 py-3 rounded-full text-xs font-bold hover:bg-teal-600 transition-colors shadow-md">♻️ REFRAME</button></div>
-                <div id="anabolic-section" class="hidden opacity-0 transition-opacity duration-500">
-                    <label class="text-xs font-bold text-teal-600 block mb-2">NEW THOUGHT (FUELING)</label>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span onclick="setAnabolic('I choose to focus on...')" class="bg-teal-50 border border-teal-200 text-teal-800 text-xs px-3 py-2 rounded cursor-pointer hover:bg-teal-100">"I choose to focus on..."</span>
-                        <span onclick="setAnabolic('I can only do what I can do...')" class="bg-teal-50 border border-teal-200 text-teal-800 text-xs px-3 py-2 rounded cursor-pointer hover:bg-teal-100">"I can only do what I can do."</span>
+
+                <div id="script-patient" class="hidden bg-white p-8 border border-slate-200 rounded-2xl shadow-md relative">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-rose-500 rounded-l-2xl"></div>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4">Protocol: The Clinical Pause</p>
+                    <div class="text-base leading-relaxed text-slate-800 font-medium">
+                        "I want to help you, but I cannot provide care while being spoken to this way.<br><br>I am going to step out for <input type="text" placeholder="[5 Minutes]" class="border-b-2 border-rose-500 outline-none w-20 text-center text-slate-900 font-bold bg-transparent">.<br><br>When I return, we can restart respectfully."
                     </div>
-                    <textarea id="anabolic-input" class="w-full border border-teal-200 rounded p-3 text-sm font-mono h-20 focus:border-teal-500 outline-none bg-teal-50/50" placeholder="Complete the thought..."></textarea>
-                    <button onclick="nextPage()" class="w-full mt-4 bg-teal-600 text-white py-3 rounded-lg font-bold hover:bg-teal-700 shadow-md">Mindset Clear. Execute &rarr;</button>
                 </div>
+
+                <div id="script-home" class="hidden bg-white p-8 border border-slate-200 rounded-2xl shadow-md relative">
+                    <div class="absolute top-0 left-0 w-1.5 h-full bg-blue-500 rounded-l-2xl"></div>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-4">Protocol: The 3rd Space</p>
+                    <div class="text-base leading-relaxed text-slate-700 font-medium">
+                        <ol class="space-y-4">
+                            <li class="flex gap-3"><span class="font-bold text-slate-400">1.</span> Pick a landmark near your house.</li>
+                            <li class="flex gap-3"><span class="font-bold text-slate-400">2.</span> Say: <strong class="text-slate-900">"I am leaving the unit here. I am now entering as [Self/Parent]."</strong></li>
+                            <li class="flex gap-3"><span class="font-bold text-slate-400">3.</span> Take 3 deep breaths. Leave the trauma in the car.</li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center"><button onclick="nextPage()" class="text-slate-400 hover:text-slate-900 text-xs font-bold border-b border-transparent hover:border-slate-900 transition-colors">PROCEED TO SPARK &rarr;</button></div>
             </div>
 
+            <!-- STEP 4: MEANING (THE SPARK + LOBSTER) -->
             <div id="p4" class="page">
-                <h2 class="text-3xl font-bold text-slate-900 mb-2">Step 4: Discharge</h2>
-                <p class="text-slate-500 mb-6">Protect your license and your capacity. Select the scenario:</p>
-                <div class="flex bg-slate-200 p-1 rounded-lg mb-6">
-                    <button onclick="switchScript('admin')" id="btn-admin" class="flex-1 py-2 text-xs font-bold rounded-md bg-white text-slate-900 shadow-sm transition-all">ADMIN / CHARGE</button>
-                    <button onclick="switchScript('family')" id="btn-family" class="flex-1 py-2 text-xs font-bold rounded-md text-slate-500 hover:text-slate-700 transition-all">FAMILY MEMBER</button>
-                </div>
-                <div id="script-admin" class="bg-white p-6 border border-slate-200 rounded-lg shadow-lg relative">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-teal-500 rounded-l-lg"></div>
-                    <p class="font-mono text-xs text-slate-400 mb-2 uppercase">SCRIPT: PROTECTING CAPACITY</p>
-                    <div class="text-lg leading-relaxed text-slate-800 font-medium">
-                        "I want to ensure this patient gets the safest care possible. <br><br>Right now, my capacity is maxed. To accept this new admission safely, I need <input type="text" placeholder="[15 mins / Support]" class="border-b-2 border-teal-500 outline-none w-40 text-center text-slate-900 font-bold bg-transparent">. <br><br>Can you help me facilitate that?"
-                    </div>
-                </div>
-                <div id="script-family" class="hidden bg-white p-6 border border-slate-200 rounded-lg shadow-lg relative">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-rose-500 rounded-l-lg"></div>
-                    <p class="font-mono text-xs text-slate-400 mb-2 uppercase">SCRIPT: BOUNDARY SETTING</p>
-                    <div class="text-lg leading-relaxed text-slate-800 font-medium">
-                        "I understand you are frustrated and scared. I want to give your <input type="text" placeholder="[Dad/Mom/Wife]" class="border-b-2 border-rose-500 outline-none w-32 text-center text-slate-900 font-bold bg-transparent"> the best care.<br><br>However, for me to focus on them, I need us to speak respectfully.<br><br>Can we restart this conversation?"
-                    </div>
-                </div>
-                <div class="mt-8 text-center"><button onclick="nextPage()" class="text-slate-400 hover:text-slate-900 text-xs font-bold border-b border-transparent hover:border-slate-900 transition-colors">COMPLETE PROTOCOL</button></div>
-            </div>
+                <button onclick="prevPage()" class="mb-4 text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Back
+                </button>
+                <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">4. The Spark</h2>
+                <p class="text-slate-500 mb-6 text-sm">Boundaries protect the vessel. Meaning fuels the engine.</p>
 
-            <div id="p5" class="page">
-                <div class="text-center mt-10">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Vitals Checked.</h2>
-                    <div class="medical-box mb-8 shadow-sm">"Self-care is not a luxury. It is a sterile field for your mind. Protect it like you protect your patient."</div>
-                    <div class="space-y-4 max-w-sm mx-auto">
-                        <a href="https://app.liveadaptiv.com" target="_blank" class="block bg-slate-900 text-white p-4 rounded-lg hover:bg-teal-600 transition-colors shadow-lg group">
-                            <div class="flex justify-between items-center"><div class="text-left"><p class="text-xs text-teal-300 font-bold tracking-wider">DIGITAL PPE</p><p class="font-bold text-lg">Open Adaptiv App</p></div><span class="group-hover:translate-x-1 transition-transform">→</span></div>
-                        </a>
+                <!-- The Caregiver's Trap -->
+                <div class="bg-amber-50 border border-amber-200 p-6 rounded-2xl mb-8 relative">
+                    <h3 class="text-amber-800 font-bold text-sm mb-2 flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"></path><line x1="16" y1="8" x2="2" y2="22"></line><line x1="17.5" y1="15" x2="9" y2="15"></line></svg> The Caregiver's Trap</h3>
+                    <p class="text-amber-900/80 text-xs leading-relaxed font-medium">You entered this field with a servant's heart. But serving from a place of depletion creates resentment (Martyrdom). To survive, you must transcend helping out of guilt, and return to helping out of <strong>Purpose</strong>.</p>
+                </div>
+
+                <!-- The Meaning Anchor -->
+                <div id="meaning-anchor" class="bg-white p-8 rounded-2xl border border-slate-200 shadow-md mb-8">
+                    <h3 class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mb-6">The Meaning Anchor</h3>
+                    <label class="font-bold text-slate-800 text-lg block mb-4 leading-tight">Think back to the very first day you decided to enter healthcare. Why did you choose this pain?</label>
+                    <textarea id="spark-input" class="w-full border-b-2 border-teal-200 p-3 text-lg font-serif italic h-24 focus:border-teal-500 outline-none bg-transparent placeholder-slate-300 resize-none" placeholder="I chose to heal because..."></textarea>
+                    <button onclick="ignitePurpose()" class="w-full mt-6 bg-teal-600 text-white py-4 rounded-xl font-bold text-xs tracking-widest uppercase hover:bg-teal-500 transition-all shadow-md">Ignite Purpose</button>
+                </div>
+
+                <!-- The Lobster Principle -->
+                <div id="lobster-principle" class="hidden text-center mt-12 animate-pulse-once">
+                    <div class="bg-teal-50 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-lg"><span class="text-4xl">🦞</span></div>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 text-left text-sm leading-relaxed text-slate-600 mb-10 shadow-sm">
+                        "A lobster is a soft animal in a rigid shell. As it grows, the shell becomes tight and painful. The lobster feels stress. <br><br>It does not take a pill to numb the stress. It recognizes the pain as a signal. It goes under a rock (Rest), sheds the shell (Vulnerability), and grows a new one.<br><br><strong>Now that you remember your 'Why', the stress is no longer just pain. It is the biological trigger for your expansion.</strong>"
                     </div>
-                    <button onclick="location.reload()" class="mt-12 text-slate-400 underline text-xs hover:text-slate-600">Reset for Next Shift</button>
+                    <div class="bg-slate-900 text-white p-6 rounded-2xl text-center shadow-xl">
+                        <p class="text-teal-400 font-mono text-[10px] uppercase tracking-widest mb-3">Your Sovereign Oath</p>
+                        <p id="final-oath" class="font-serif text-lg italic text-slate-100 leading-relaxed"></p>
+                    </div>
+                    <button onclick="location.reload()" class="mt-10 bg-slate-200 text-slate-700 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-slate-300 transition-all">Reset For Next Shift</button>
                 </div>
             </div>
 
@@ -255,18 +310,61 @@
     </main>
 
     <script>
-        let currentPage = 0;
-        const totalPages = 6;
+        let currentPage = 0; 
+        const totalPages = 5;
+        
         function showPage(i) { document.querySelectorAll('.page').forEach((p, idx) => { p.classList.remove('active'); if(idx===i) setTimeout(()=>p.classList.add('active'),50); }); currentPage = i; document.getElementById('main-content').scrollTop = 0; }
         function nextPage() { if(currentPage < totalPages-1) showPage(currentPage+1); }
-        function updateGauge(val) { const txt = document.getElementById('gauge-text'); const num = document.getElementById('pressure-val'); num.innerText = val + "%"; if(val > 70) { txt.innerHTML = "STATUS: <span class='text-rose-500 font-bold'>CRITICAL (Risk of Error)</span>"; } else { txt.innerHTML = "STATUS: STABLE"; } }
-        function selectTrap(el) { document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); document.getElementById('trap-continue').classList.remove('hidden'); }
-        function revealRegulators(zone) { document.getElementById('sensation-text').innerText = zone + " DETECTED."; document.getElementById('regulator-menu').classList.remove('hidden'); setTimeout(() => document.getElementById('regulator-menu').scrollIntoView({behavior:'smooth'}), 100); }
-        function runProtocol(type) { const disp = document.getElementById('protocol-display'); disp.classList.remove('hidden'); if(type==='squeeze') { document.getElementById('proto-title').innerText = "PROTOCOL: RAPID DISCHARGE"; document.getElementById('proto-text').innerHTML = "Go to the breakroom/bathroom.<br>Shake your hands vigorously for 10 seconds.<br>Exhale with a 'HAAAA' sound.<br>Drop shoulders."; } else { document.getElementById('proto-title').innerText = "PROTOCOL: SCRUB IN (GROUNDING)"; document.getElementById('proto-text').innerHTML = "Feel your feet on the floor.<br>Imagine washing your hands.<br>As you dry them, imagine washing away the last patient's energy.<br>Enter the new room clean."; } disp.scrollIntoView({behavior:'smooth'}); }
-        function setCatabolic(el, txt) { document.getElementById('anabolic-input').placeholder = "Reframing: " + txt; }
-        function revealAnabolic() { const sec = document.getElementById('anabolic-section'); sec.classList.remove('hidden'); setTimeout(()=>sec.classList.remove('opacity-0'),50); sec.scrollIntoView({behavior:'smooth'}); }
-        function setAnabolic(txt) { document.getElementById('anabolic-input').value = txt + " "; }
-        function switchScript(type) { const adminBtn = document.getElementById('btn-admin'); const famBtn = document.getElementById('btn-family'); const adminScript = document.getElementById('script-admin'); const famScript = document.getElementById('script-family'); if(type === 'admin') { adminBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm'); adminBtn.classList.remove('text-slate-500'); famBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm'); famBtn.classList.add('text-slate-500'); adminScript.classList.remove('hidden'); famScript.classList.add('hidden'); } else { famBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm'); famBtn.classList.remove('text-slate-500'); adminBtn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm'); adminBtn.classList.add('text-slate-500'); famScript.classList.remove('hidden'); adminScript.classList.add('hidden'); } }
+        function prevPage() { if(currentPage > 0) showPage(currentPage-1); }
+        
+        function selectTrap(el) { 
+            document.querySelectorAll('.card').forEach(c=>c.classList.remove('selected')); 
+            el.classList.add('selected'); 
+            document.getElementById('btn-p1').classList.remove('hidden'); 
+        }
+        
+        function runProtocol(type) { 
+            const disp = document.getElementById('protocol-display'); disp.classList.remove('hidden'); 
+            if(type==='squeeze') { document.getElementById('proto-title').innerText = "PROTOCOL: RAPID DISCHARGE"; document.getElementById('proto-text').innerHTML = "1. Find a sterile/safe spot.<br>2. Clench fists and shoulders tight.<br>3. Inhale to maximum capacity.<br>4. Exhale with a silent 'HA'.<br>5. Drop shoulders instantly."; } 
+            else { document.getElementById('proto-title').innerText = "PROTOCOL: SCRUB IN"; document.getElementById('proto-text').innerHTML = "1. Feel your feet firmly on the floor.<br>2. Imagine washing your hands at the sink.<br>3. As you 'dry' them, visualize washing away the previous patient's energy.<br>4. Enter the next moment clean."; } 
+            setTimeout(() => { disp.scrollIntoView({behavior:'smooth', block: 'end'}); }, 100);
+        }
+        
+        function selectLens(id) {
+            document.querySelectorAll('.lens-btn').forEach(b => { b.classList.remove('active-1', 'active-2', 'active-3'); });
+            const btn = document.getElementById('lens-'+id);
+            btn.classList.add('active-'+id);
+            const prompt = document.getElementById('lens-input');
+            document.getElementById('lens-prompt').classList.remove('hidden');
+            if(id===1) prompt.placeholder = "Why is this unfair? How are they hurting you?";
+            if(id===2) prompt.placeholder = "Just the facts. What would a camera see/hear?";
+            if(id===3) prompt.placeholder = "How can I use this challenge to demonstrate leadership?";
+            prompt.value = "";
+        }
+        
+        function switchScript(type) { 
+            ['admin','patient','home'].forEach(k => document.getElementById('script-'+k).classList.add('hidden'));
+            ['btn-admin','btn-patient','btn-home'].forEach(k => {
+                const b = document.getElementById(k);
+                b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                b.classList.add('text-slate-500');
+            });
+            document.getElementById('script-'+type).classList.remove('hidden');
+            const btn = document.getElementById('btn-'+type);
+            btn.classList.remove('text-slate-500');
+            btn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+        }
+
+        function ignitePurpose() { 
+            const spark = document.getElementById('spark-input').value.trim(); 
+            if(!spark) { alert("Please anchor your meaning."); return; } 
+            document.getElementById('meaning-anchor').style.display = 'none'; 
+            document.getElementById('lobster-principle').classList.remove('hidden'); 
+            document.getElementById('final-oath').innerText = `"I protect my capacity fiercely, because ${spark.charAt(0).toLowerCase() + spark.slice(1)}. I am not breaking; I am expanding."`; 
+            setTimeout(() => { document.getElementById('lobster-principle').scrollIntoView({behavior:'smooth', block: 'start'}); }, 100); 
+        }
     </script>
 </body>
 </html>
+
+
