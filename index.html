@@ -1,244 +1,258 @@
-import React, { useState } from 'react';
-import { 
-  Activity, 
-  HeartPulse, 
-  ShieldAlert, 
-  BrainCircuit, 
-  Wind, 
-  Download, 
-  Lock, 
-  PlayCircle,
-  Stethoscope
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Sign Protocol | LiveAdaptiv</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Inter"', 'sans-serif'] },
+                    colors: { 
+                        slate: { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' },
+                        teal: { 50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6' },
+                        rose: { 50: '#fff1f2', 100: '#ffe4e6', 400: '#fb7185', 500: '#f43f5e' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-50 font-sans antialiased min-h-screen flex flex-col" id="app-root">
+    <!-- App Content Injected Here by JS -->
 
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [unitCodeInput, setUnitCodeInput] = useState('');
-  const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('hardware');
+    <script>
+        // --- STATE MANAGEMENT ---
+        let isAuthenticated = false;
+        let activeTab = 'hardware';
+        const VALID_UNIT_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER'];
 
-  // Enterprise Unit Codes for tracking specific hospital floors
-  const VALID_UNIT_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER'];
-
-  const handleAuth = (e) => {
-    e.preventDefault();
-    const cleanInput = unitCodeInput.trim().toUpperCase();
-    
-    if (VALID_UNIT_CODES.includes(cleanInput)) {
-      setIsAuthenticated(true);
-      setError('');
-    } else {
-      setError('Unit Code Invalid. Contact your Nurse Manager or Chief Resident.');
-    }
-  };
-
-  // ------------------------------------------------------------------------
-  // SECURE LOCK SCREEN (The Hospital Terminal)
-  // ------------------------------------------------------------------------
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-32 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 text-center mb-8">
-            <div className="w-16 h-16 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center mx-auto mb-6 text-teal-400 shadow-inner">
-              <Stethoscope className="w-8 h-8" />
-            </div>
-            <h1 className="text-2xl font-semibold tracking-tight text-white mb-2">Vital Sign Protocol</h1>
-            <p className="text-slate-400 text-sm">Acute Autonomic Triage for Frontline Clinicians</p>
-          </div>
-
-          <form onSubmit={handleAuth} className="relative z-10 space-y-6">
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 text-center">Enter Authorized Unit Code</label>
-              <input
-                type="text"
-                value={unitCodeInput}
-                onChange={(e) => setUnitCodeInput(e.target.value)}
-                placeholder="e.g., ICU-2026"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-center tracking-widest uppercase text-sm font-bold"
-              />
-              {error && <p className="text-rose-400 text-xs text-center mt-3 uppercase tracking-wider font-bold">{error}</p>}
-            </div>
-            <button
-              type="submit"
-              className="w-full py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(20,184,166,0.2)]"
-            >
-              Access Terminal
-            </button>
-          </form>
-        </div>
-        <p className="mt-8 text-[10px] text-slate-600 uppercase tracking-widest">© 2026 LiveAdaptiv Clinical Systems</p>
-      </div>
-    );
-  }
-
-  // ------------------------------------------------------------------------
-  // MAIN CLINICAL DASHBOARD
-  // ------------------------------------------------------------------------
-  return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      
-      {/* Top Navigation */}
-      <nav className="w-full bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Activity className="w-5 h-5 text-teal-400" />
-            <span className="font-semibold text-white tracking-wide">Vital Sign Protocol</span>
-          </div>
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-teal-400 bg-teal-400/10 px-3 py-1.5 rounded-full border border-teal-400/20">
-            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-            Unit Active
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-4xl mx-auto px-6 py-10 md:py-16">
-        
-        {/* Header Section */}
-        <header className="mb-10 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-3 tracking-tight">Acute Shift Decompression</h1>
-          <p className="text-slate-500 text-base max-w-2xl leading-relaxed">
-            You are operating in a high-acuity environment. Your nervous system is absorbing secondary trauma. Use these rapid protocols to down-regulate your autonomic response before making critical medical decisions or ending your shift.
-          </p>
-        </header>
-
-        {/* Clinical Tabs - Mobile Optimized */}
-        <div className="flex overflow-x-auto hide-scrollbar gap-2 mb-8 pb-2">
-          <button 
-            onClick={() => setActiveTab('hardware')}
-            className={`whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'hardware' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}`}
-          >
-            <HeartPulse className="w-4 h-4" /> Hardware (Body)
-          </button>
-          <button 
-            onClick={() => setActiveTab('lens')}
-            className={`whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'lens' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}`}
-          >
-            <BrainCircuit className="w-4 h-4" /> Lens (Mind)
-          </button>
-          <button 
-            onClick={() => setActiveTab('shield')}
-            className={`whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'shield' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}`}
-          >
-            <ShieldAlert className="w-4 h-4" /> Shield (Action)
-          </button>
-        </div>
-
-        {/* Tab Content Areas */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8 min-h-[350px]">
-          
-          {/* HARDWARE */}
-          {activeTab === 'hardware' && (
-            <div className="animate-in fade-in duration-500">
-              <div className="flex items-center gap-3 mb-2">
-                <HeartPulse className="w-6 h-6 text-rose-500" />
-                <h2 className="text-2xl font-bold text-slate-900">Hardware Triage</h2>
-              </div>
-              <p className="text-slate-500 text-sm mb-8">Stop charting. Do not prescribe. Flush the cortisol dump from the code you just ran.</p>
-              
-              <div className="bg-slate-50 rounded-xl border border-slate-200 p-6 mb-6">
-                <h4 className="font-bold text-xs uppercase tracking-widest text-slate-900 mb-4 flex items-center gap-2">
-                  <Wind className="w-4 h-4 text-teal-500" /> 90-Second Physiological Sigh
-                </h4>
-                <ul className="space-y-3 text-sm text-slate-600">
-                  <li className="flex gap-3"><span className="font-bold text-teal-500">1.</span> Inhale deeply through the nose until lungs are full.</li>
-                  <li className="flex gap-3"><span className="font-bold text-teal-500">2.</span> Take one more short, sharp inhale to pop the alveoli.</li>
-                  <li className="flex gap-3"><span className="font-bold text-teal-500">3.</span> Exhale slowly through the mouth with an audible sigh.</li>
-                  <li className="flex gap-3"><span className="font-bold text-teal-500">4.</span> Repeat 3 times. Your heart rate will mathematically drop.</li>
-                </ul>
-              </div>
-
-              {/* Tactical Audio Placeholder for low-friction use */}
-              <button className="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors">
-                <div className="flex items-center gap-3">
-                  <PlayCircle className="w-5 h-5 text-teal-400" />
-                  <span className="text-sm font-semibold tracking-wide">Play Guided Decompression Audio (2:00)</span>
-                </div>
-                <span className="text-[10px] uppercase text-slate-400 tracking-widest font-bold">Eyes Free</span>
-              </button>
-            </div>
-          )}
-
-          {/* LENS */}
-          {activeTab === 'lens' && (
-            <div className="animate-in fade-in duration-500">
-              <div className="flex items-center gap-3 mb-2">
-                <BrainCircuit className="w-6 h-6 text-teal-500" />
-                <h2 className="text-2xl font-bold text-slate-900">Cognitive Defusion</h2>
-              </div>
-              <p className="text-slate-500 text-sm mb-8">Interrupt the trauma loop and detach from clinical outcomes beyond your control.</p>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-rose-50/50 p-6 rounded-xl border border-rose-100">
-                  <h4 className="font-bold text-xs uppercase tracking-widest text-slate-900 mb-2">The Fiction (The Loop)</h4>
-                  <p className="text-sm text-slate-600 italic">"If I had just caught that lab value 10 minutes earlier, they wouldn't have coded. I am an imposter."</p>
-                </div>
-                <div className="bg-teal-50/50 p-6 rounded-xl border border-teal-100">
-                  <h4 className="font-bold text-xs uppercase tracking-widest text-slate-900 mb-2">The Clinical Reality</h4>
-                  <p className="text-sm text-slate-600 italic">"I operated within the standard of care with the data I had at the time. The disease pathology dictates the outcome, not my perfection."</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* SHIELD */}
-          {activeTab === 'shield' && (
-            <div className="animate-in fade-in duration-500">
-              <div className="flex items-center gap-3 mb-2">
-                <ShieldAlert className="w-6 h-6 text-slate-700" />
-                <h2 className="text-2xl font-bold text-slate-900">Boundary Architecture</h2>
-              </div>
-              <p className="text-slate-500 text-sm mb-8">Scripts to defend your license and your bandwidth against unreasonable administrative or attending demands.</p>
-              
-              <div className="space-y-4">
-                <div className="p-5 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
-                  <h4 className="font-bold text-[11px] uppercase tracking-widest text-slate-900 mb-2">The Safety Pivot (For Unsafe Ratios)</h4>
-                  <p className="text-sm text-slate-600">"I understand we are short-staffed. Taking a 7th high-acuity patient compromises my ability to safely monitor my current assignment. How would you like me to triage care to accommodate this?"</p>
-                </div>
-                <div className="p-5 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
-                  <h4 className="font-bold text-[11px] uppercase tracking-widest text-slate-900 mb-2">The Scope Defense</h4>
-                  <p className="text-sm text-slate-600">"I am not comfortable executing that order as it falls outside of my current clinical scope. I need an attending or senior resident to bedside for evaluation."</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* ------------------------------------------------------------------------
-            ENTERPRISE DOWNLOAD SECTION (REPLACES GUMROAD)
-            ------------------------------------------------------------------------ */}
-        <div className="mt-10 p-8 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-32 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
-          
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2 tracking-tight">Enterprise Triage Toolkit</h3>
-              <p className="text-slate-400 text-sm max-w-md">
-                Your hospital network has secured full access to the extended clinical resources. Download your encrypted protocol PDFs and offline audio files here.
-              </p>
-            </div>
+        // --- AUTHENTICATION LOGIC ---
+        function handleAuth(event) {
+            event.preventDefault();
+            const input = document.getElementById('unitCodeInput').value.trim().toUpperCase();
+            const errorMsg = document.getElementById('error-msg');
             
-            <a 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); alert('In production, this downloads the secure hospital-licensed PDF.'); }}
-              className="w-full md:w-auto px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 text-[11px] font-bold uppercase tracking-widest text-center rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
-            >
-              <Download className="w-4 h-4" /> Download Unit Assets
-            </a>
-          </div>
-        </div>
+            if (VALID_UNIT_CODES.includes(input)) {
+                isAuthenticated = true;
+                renderApp();
+            } else {
+                errorMsg.classList.remove('hidden');
+                errorMsg.innerText = 'Unit Code Invalid. Contact your Nurse Manager or Chief Resident.';
+            }
+        }
 
-      </main>
+        function switchTab(tab) {
+            activeTab = tab;
+            renderApp();
+        }
 
-      <footer className="text-center pb-12 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-        LiveAdaptiv Clinical Systems | Protected Health Information Standard
-      </footer>
-    </div>
-  );
-}
+        // --- VIEWS ---
+        function getAuthView() {
+            return `
+                <div class="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-6 w-full">
+                    <div class="max-w-md w-full bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-2xl relative overflow-hidden fade-in">
+                        <div class="absolute top-0 right-0 p-32 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="relative z-10 text-center mb-8">
+                            <div class="w-16 h-16 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center mx-auto mb-6 text-teal-400 shadow-inner">
+                                <i data-lucide="stethoscope" class="w-8 h-8"></i>
+                            </div>
+                            <h1 class="text-2xl font-semibold tracking-tight text-white mb-2">Vital Sign Protocol</h1>
+                            <p class="text-slate-400 text-sm">Acute Autonomic Triage for Frontline Clinicians</p>
+                        </div>
 
+                        <form onsubmit="handleAuth(event)" class="relative z-10 space-y-6">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2 text-center">Enter Authorized Unit Code</label>
+                                <input type="text" id="unitCodeInput" placeholder="e.g., ICU-2026" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-4 text-white placeholder-slate-600 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-center tracking-widest uppercase text-sm font-bold">
+                                <p id="error-msg" class="text-rose-400 text-xs text-center mt-3 uppercase tracking-wider font-bold hidden"></p>
+                            </div>
+                            <button type="submit" class="w-full py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 font-bold rounded-xl text-[10px] uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(20,184,166,0.2)]">
+                                Access Terminal
+                            </button>
+                        </form>
+                    </div>
+                    <p class="mt-8 text-[10px] text-slate-600 uppercase tracking-widest">&copy; 2026 LiveAdaptiv Clinical Systems</p>
+                </div>
+            `;
+        }
 
+        function getDashboardView() {
+            return `
+                <div class="min-h-screen bg-slate-50 font-sans text-slate-900 w-full flex flex-col fade-in">
+                    
+                    <!-- Top Navigation -->
+                    <nav class="w-full bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+                        <div class="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="activity" class="w-5 h-5 text-teal-400"></i>
+                                <span class="font-semibold text-white tracking-wide">Vital Sign Protocol</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-teal-400 bg-teal-400/10 px-3 py-1.5 rounded-full border border-teal-400/20">
+                                <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+                                Unit Active
+                            </div>
+                        </div>
+                    </nav>
 
+                    <main class="max-w-4xl mx-auto px-6 py-10 md:py-16 flex-grow w-full">
+                        
+                        <!-- Header -->
+                        <header class="mb-10 text-center md:text-left">
+                            <h1 class="text-3xl md:text-4xl font-semibold text-slate-900 mb-3 tracking-tight">Acute Shift Decompression</h1>
+                            <p class="text-slate-500 text-base max-w-2xl leading-relaxed">
+                                You are operating in a high-acuity environment. Your nervous system is absorbing secondary trauma. Use these rapid protocols to down-regulate your autonomic response before making critical medical decisions or ending your shift.
+                            </p>
+                        </header>
+
+                        <!-- Tabs -->
+                        <div class="flex overflow-x-auto hide-scrollbar gap-2 mb-8 pb-2">
+                            <button onclick="switchTab('hardware')" class="whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'hardware' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}">
+                                <i data-lucide="heart-pulse" class="w-4 h-4"></i> Hardware (Body)
+                            </button>
+                            <button onclick="switchTab('lens')" class="whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'lens' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}">
+                                <i data-lucide="brain-circuit" class="w-4 h-4"></i> Lens (Mind)
+                            </button>
+                            <button onclick="switchTab('shield')" class="whitespace-nowrap px-6 py-3.5 rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'shield' ? 'bg-slate-900 text-white shadow-md' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'}">
+                                <i data-lucide="shield-alert" class="w-4 h-4"></i> Shield (Action)
+                            </button>
+                        </div>
+
+                        <!-- Tab Content -->
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8 min-h-[350px]">
+                            ${activeTab === 'hardware' ? getHardwareTab() : ''}
+                            ${activeTab === 'lens' ? getLensTab() : ''}
+                            ${activeTab === 'shield' ? getShieldTab() : ''}
+                        </div>
+
+                        <!-- Download Box -->
+                        <div class="mt-10 p-8 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-32 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div>
+                                    <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Enterprise Triage Toolkit</h3>
+                                    <p class="text-slate-400 text-sm max-w-md">Your hospital network has secured full access to the extended clinical resources. Download your encrypted protocol PDFs and offline audio files here.</p>
+                                </div>
+                                <a href="#" onclick="alert('In production, this downloads the secure hospital-licensed PDF.')" class="w-full md:w-auto px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 text-[11px] font-bold uppercase tracking-widest text-center rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
+                                    <i data-lucide="download" class="w-4 h-4"></i> Download Unit Assets
+                                </a>
+                            </div>
+                        </div>
+
+                    </main>
+
+                    <footer class="text-center pb-12 pt-8 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                        LiveAdaptiv Clinical Systems | Protected Health Information Standard
+                    </footer>
+                </div>
+            `;
+        }
+
+        // --- SUB-VIEWS FOR TABS ---
+        function getHardwareTab() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="heart-pulse" class="w-6 h-6 text-rose-500"></i>
+                        <h2 class="text-2xl font-bold text-slate-900">Hardware Triage</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-8">Stop charting. Do not prescribe. Flush the cortisol dump from the code you just ran.</p>
+                    
+                    <div class="bg-slate-50 rounded-xl border border-slate-200 p-6 mb-6">
+                        <h4 class="font-bold text-xs uppercase tracking-widest text-slate-900 mb-4 flex items-center gap-2">
+                            <i data-lucide="wind" class="w-4 h-4 text-teal-500"></i> 90-Second Physiological Sigh
+                        </h4>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex gap-3"><span class="font-bold text-teal-500">1.</span> Inhale deeply through the nose until lungs are full.</li>
+                            <li class="flex gap-3"><span class="font-bold text-teal-500">2.</span> Take one more short, sharp inhale to pop the alveoli.</li>
+                            <li class="flex gap-3"><span class="font-bold text-teal-500">3.</span> Exhale slowly through the mouth with an audible sigh.</li>
+                            <li class="flex gap-3"><span class="font-bold text-teal-500">4.</span> Repeat 3 times. Your heart rate will mathematically drop.</li>
+                        </ul>
+                    </div>
+
+                    <button class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>
+                            <span class="text-sm font-semibold tracking-wide">Play Guided Decompression Audio (2:00)</span>
+                        </div>
+                        <span class="text-[10px] uppercase text-slate-400 tracking-widest font-bold hidden sm:inline">Eyes Free</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        function getLensTab() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="brain-circuit" class="w-6 h-6 text-teal-500"></i>
+                        <h2 class="text-2xl font-bold text-slate-900">Cognitive Defusion</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-8">Interrupt the trauma loop and detach from clinical outcomes beyond your control.</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-rose-50/50 p-6 rounded-xl border border-rose-100">
+                            <h4 class="font-bold text-xs uppercase tracking-widest text-slate-900 mb-2">The Fiction (The Loop)</h4>
+                            <p class="text-sm text-slate-600 italic">"If I had just caught that lab value 10 minutes earlier, they wouldn't have coded. I am an imposter."</p>
+                        </div>
+                        <div class="bg-teal-50/50 p-6 rounded-xl border border-teal-100">
+                            <h4 class="font-bold text-xs uppercase tracking-widest text-slate-900 mb-2">The Clinical Reality</h4>
+                            <p class="text-sm text-slate-600 italic">"I operated within the standard of care with the data I had at the time. The disease pathology dictates the outcome, not my perfection."</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getShieldTab() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="shield-alert" class="w-6 h-6 text-slate-700"></i>
+                        <h2 class="text-2xl font-bold text-slate-900">Boundary Architecture</h2>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-8">Scripts to defend your license and your bandwidth against unreasonable administrative or attending demands.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="p-5 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-900 mb-2">The Safety Pivot (For Unsafe Ratios)</h4>
+                            <p class="text-sm text-slate-600">"I understand we are short-staffed. Taking a 7th high-acuity patient compromises my ability to safely monitor my current assignment. How would you like me to triage care to accommodate this?"</p>
+                        </div>
+                        <div class="p-5 border border-slate-200 rounded-xl hover:border-slate-300 transition-colors">
+                            <h4 class="font-bold text-[11px] uppercase tracking-widest text-slate-900 mb-2">The Scope Defense</h4>
+                            <p class="text-sm text-slate-600">"I am not comfortable executing that order as it falls outside of my current clinical scope. I need an attending or senior resident to bedside for evaluation."</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- CORE RENDER ENGINE ---
+        function renderApp() {
+            const root = document.getElementById('app-root');
+            if (!isAuthenticated) {
+                root.innerHTML = getAuthView();
+            } else {
+                root.innerHTML = getDashboardView();
+            }
+            // Re-initialize icons after DOM update
+            lucide.createIcons();
+            window.scrollTo(0,0);
+        }
+
+        // Initialize the app on load
+        renderApp();
+    </script>
+</body>
+</html>
