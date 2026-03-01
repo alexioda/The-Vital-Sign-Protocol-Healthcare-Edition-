@@ -300,8 +300,9 @@
                         </ul>
                     </div>
 
-                    <!-- ACTIVE AUDIO BUTTON -->
-                    <button onclick="toggleAudio()" class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6 shadow-md border border-slate-700">
+                    <!-- ACTIVE AUDIO BUTTON (HIDDEN UNTIL MP3 IS RECORDED) -->
+                    <!-- To reactivate, remove style="display: none;" below -->
+                    <button style="display: none;" onclick="toggleAudio()" class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6 shadow-md border border-slate-700">
                         <div class="flex items-center gap-3">
                             <span id="audio-icon">${iconHTML}</span>
                             <span id="audio-text" class="text-sm font-semibold tracking-wide">${textHTML}</span>
