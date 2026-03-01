@@ -36,7 +36,42 @@
         // --- STATE MANAGEMENT ---
         let isAuthenticated = false;
         let activeTab = 'hardware';
-        const VALID_UNIT_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER'];
+        const VALID_UNIT_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER', 'RPC-BETA'];
+
+        // --- AUDIO ENGINE ---
+        // Looks for a file named "decompression.mp3" in the same directory
+        const decompressionAudio = new Audio('decompression.mp3');
+        let isAudioPlaying = false;
+
+        function toggleAudio() {
+            const btnText = document.getElementById('audio-text');
+            const btnIcon = document.getElementById('audio-icon');
+
+            if (isAudioPlaying) {
+                decompressionAudio.pause();
+                isAudioPlaying = false;
+                if(btnText) btnText.innerText = "Play Guided Decompression Audio (2:00)";
+                if(btnIcon) btnIcon.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>`;
+            } else {
+                decompressionAudio.play().catch(e => {
+                    alert("Audio file not found. Make sure 'decompression.mp3' is uploaded to your repository.");
+                });
+                isAudioPlaying = true;
+                if(btnText) btnText.innerText = "Pause Audio";
+                if(btnIcon) btnIcon.innerHTML = `<i data-lucide="pause-circle" class="w-5 h-5 text-teal-400"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        // Reset button when audio finishes
+        decompressionAudio.onended = function() {
+            isAudioPlaying = false;
+            const btnText = document.getElementById('audio-text');
+            const btnIcon = document.getElementById('audio-icon');
+            if(btnText) btnText.innerText = "Play Guided Decompression Audio (2:00)";
+            if(btnIcon) btnIcon.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>`;
+            lucide.createIcons();
+        };
 
         // --- AUTHENTICATION LOGIC ---
         function handleAuth(event) {
@@ -199,7 +234,7 @@
                                     <h3 class="text-xl font-bold text-white mb-2 tracking-tight">Enterprise Triage Toolkit</h3>
                                     <p class="text-slate-400 text-sm max-w-md">Your hospital network has secured full access to the extended clinical resources. Download your encrypted protocol PDFs and offline audio files here.</p>
                                 </div>
-                                <a href="#" onclick="alert('In production, this downloads the secure hospital-licensed PDF.')" class="w-full md:w-auto px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 text-[11px] font-bold uppercase tracking-widest text-center rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
+                                <a href="vital_sign_manual.pdf" target="_blank" class="w-full md:w-auto px-6 py-4 bg-teal-500 hover:bg-teal-400 text-slate-900 text-[11px] font-bold uppercase tracking-widest text-center rounded-xl transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
                                     <i data-lucide="download" class="w-4 h-4"></i> Download Unit Assets
                                 </a>
                             </div>
@@ -211,7 +246,7 @@
                         LiveAdaptiv Clinical Systems | Protected Health Information Standard
                     </footer>
 
-                    <!-- CLINICAL RATIONALE MODAL (HIDDEN BY DEFAULT) -->
+                    <!-- CLINICAL RATIONALE MODAL -->
                     <div id="clinical-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
                         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
                         <div class="bg-white rounded-2xl w-full max-w-lg relative z-10 shadow-2xl border border-slate-200 flex flex-col max-h-[85vh] fade-in">
@@ -237,6 +272,14 @@
 
         // --- SUB-VIEWS FOR TABS ---
         function getHardwareTab() {
+            // Check state to render correct icon if audio is currently playing while they switch tabs
+            const iconHTML = isAudioPlaying 
+                ? `<i data-lucide="pause-circle" class="w-5 h-5 text-teal-400"></i>`
+                : `<i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>`;
+            const textHTML = isAudioPlaying
+                ? "Pause Audio"
+                : "Play Guided Decompression Audio (2:00)";
+
             return `
                 <div class="fade-in">
                     <div class="flex items-center gap-3 mb-2">
@@ -257,12 +300,13 @@
                         </ul>
                     </div>
 
-                    <button class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6">
+                    <!-- ACTIVE AUDIO BUTTON -->
+                    <button onclick="toggleAudio()" class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6 shadow-md border border-slate-700">
                         <div class="flex items-center gap-3">
-                            <i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>
-                            <span class="text-sm font-semibold tracking-wide">Play Guided Decompression Audio (2:00)</span>
+                            <span id="audio-icon">${iconHTML}</span>
+                            <span id="audio-text" class="text-sm font-semibold tracking-wide">${textHTML}</span>
                         </div>
-                        <span class="text-[10px] uppercase text-slate-400 tracking-widest font-bold hidden sm:inline">Eyes Free</span>
+                        <span class="text-[10px] uppercase text-teal-400 tracking-widest font-bold hidden sm:inline">Eyes Free Mode</span>
                     </button>
 
                     <button onclick="openModal('hardware')" class="flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-slate-400 hover:text-teal-500 transition-colors mx-auto">
