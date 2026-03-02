@@ -39,8 +39,8 @@
         const VALID_UNIT_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER', 'RPC-BETA'];
 
         // --- AUDIO ENGINE ---
-        // Looks for a file named "decompression.mp3" in the same directory
-        const decompressionAudio = new Audio('decompression.mp3');
+        // Looks for a file named "decompression.m4a" in the same directory
+        const decompressionAudio = new Audio('decompression.m4a');
         let isAudioPlaying = false;
 
         function toggleAudio() {
@@ -54,7 +54,7 @@
                 if(btnIcon) btnIcon.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5 text-teal-400"></i>`;
             } else {
                 decompressionAudio.play().catch(e => {
-                    alert("Audio file not found. Make sure 'decompression.mp3' is uploaded to your repository.");
+                    alert("Audio file not found. Make sure 'decompression.m4a' is uploaded to your repository.");
                 });
                 isAudioPlaying = true;
                 if(btnText) btnText.innerText = "Pause Audio";
@@ -300,9 +300,8 @@
                         </ul>
                     </div>
 
-                    <!-- ACTIVE AUDIO BUTTON (HIDDEN UNTIL MP3 IS RECORDED) -->
-                    <!-- To reactivate, remove style="display: none;" below -->
-                    <button style="display: none;" onclick="toggleAudio()" class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6 shadow-md border border-slate-700">
+                    <!-- ACTIVE AUDIO BUTTON -->
+                    <button onclick="toggleAudio()" class="w-full bg-slate-900 text-white p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-colors mb-6 shadow-md border border-slate-700">
                         <div class="flex items-center gap-3">
                             <span id="audio-icon">${iconHTML}</span>
                             <span id="audio-text" class="text-sm font-semibold tracking-wide">${textHTML}</span>
