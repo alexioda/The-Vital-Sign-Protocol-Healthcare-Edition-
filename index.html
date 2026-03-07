@@ -8,48 +8,48 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --silver: #e2e8f0; --slate: #0f172a; --charcoal: #020617; --accent: #38bdf8; }
-        body { background-color: var(--slate); color: var(--silver); font-family: 'Inter', sans-serif; overscroll-behavior: none; }
+        :root { --gold: #b2945e; --stone: #fafaf9; --charcoal: #1c1917; }
+        body { background-color: var(--stone); color: var(--charcoal); font-family: 'Inter', sans-serif; overscroll-behavior: none; }
         .font-serif { font-family: 'Cormorant Garamond', serif; }
-        .medical-grid { background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 20px 20px; }
+        .blueprint-dot { background-image: radial-gradient(circle at 1px 1px, #e7e5e4 1px, transparent 0); background-size: 30px 30px; }
         
         /* --- SECURITY LOCK SCREEN --- */
         #enterprise-lock {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--charcoal); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 999999; transition: opacity 0.5s ease;
         }
-        .lock-container { background: var(--slate); border: 1px solid #1e293b; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); }
-        .lock-logo { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 32px; font-style: italic; margin-bottom: 15px; }
+        .lock-container { background: #0f172a; border: 1px solid #1e293b; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .lock-logo { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 32px; font-style: italic; margin-bottom: 15px; }
         .lock-title { color: white; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
         .lock-desc { color: #94a3b8; font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
-        .lock-input { width: 100%; padding: 14px; background: var(--charcoal); border: 1px solid #334155; color: white; border-radius: 8px; margin-bottom: 16px; text-align: center; letter-spacing: 3px; font-family: monospace; font-size: 16px; outline: none; }
-        .lock-input:focus { border-color: var(--accent); }
-        .lock-btn { width: 100%; background: var(--accent); color: var(--charcoal); font-weight: bold; border: none; padding: 14px; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; transition: all 0.2s; }
-        .lock-btn:hover { background: #0ea5e9; color: white; }
+        .lock-input { width: 100%; padding: 14px; background: #020617; border: 1px solid #334155; color: white; border-radius: 8px; margin-bottom: 16px; text-align: center; letter-spacing: 3px; font-family: monospace; font-size: 16px; outline: none; }
+        .lock-input:focus { border-color: var(--gold); }
+        .lock-btn { width: 100%; background: var(--gold); color: #020617; font-weight: bold; border: none; padding: 14px; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; transition: all 0.2s; }
+        .lock-btn:hover { background: #d97706; color: white; }
         .lock-error { color: #f43f5e; font-size: 11px; margin-top: 12px; display: none; font-weight: bold; letter-spacing: 1px;}
         
         #main-app-content { display: none; animation: fadeIn 0.8s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Custom Range Slider */
+        /* Custom Range Slider matching LiveAdaptiv Brand */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(56,189,248,0.5); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--gold); cursor: pointer; margin-top: -10px; box-shadow: 0 0 10px rgba(178, 148, 94, 0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e7e5e4; border-radius: 2px; }
         input[type=range]:focus { outline: none; }
 
         .slide-in-right { animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes slideInRight { 0% { opacity: 0; transform: translateX(20px); } 100% { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
-<body class="medical-grid">
+<body class="blueprint-dot">
 
     <!-- SECURITY LOCK -->
     <div id="enterprise-lock">
         <div class="lock-container">
             <div class="lock-logo">A</div>
             <div class="lock-title">Vital Sign Protocol</div>
-            <div class="lock-desc">Clinical & Healthcare Edition. Enter your access cipher.</div>
+            <div class="lock-desc">Clinical Edition. Enter your unit access cipher.</div>
             <input type="password" id="cipher-input" class="lock-input" placeholder="ENTER CIPHER">
             <button onclick="unlockApp()" class="lock-btn">Authenticate</button>
             <div id="lock-error" class="lock-error">INVALID CIPHER. ACCESS DENIED.</div>
@@ -60,14 +60,16 @@
     <div id="main-app-content" class="min-h-screen flex flex-col">
         
         <!-- Navigation -->
-        <nav class="p-5 flex justify-between items-center sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <nav class="p-5 flex justify-between items-center sticky top-0 z-50 bg-stone-50/90 backdrop-blur-md border-b border-stone-200">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 border border-sky-400/40 rounded-full flex items-center justify-center">
-                    <span class="font-serif italic text-lg text-sky-400 pb-0.5">A</span>
+                <div class="w-8 h-8 border border-[#b2945e]/40 rounded-full flex items-center justify-center">
+                    <span class="font-serif italic text-lg text-[#b2945e] pb-0.5">A</span>
                 </div>
-                <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-slate-400">LiveAdaptiv</span>
+                <span class="text-[9px] font-bold uppercase tracking-[0.4em] text-stone-400">LiveAdaptiv</span>
             </div>
-            <div class="text-[9px] font-bold uppercase tracking-widest text-sky-400">Vital Sign Protocol</div>
+            <div class="text-[9px] font-bold uppercase tracking-widest text-[#b2945e] flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#b2945e] animate-pulse"></span> Clinical Triage
+            </div>
         </nav>
 
         <main class="flex-1 max-w-3xl mx-auto w-full p-6 pb-32">
@@ -75,12 +77,12 @@
             <div id="step-content" class="slide-in-right"></div>
 
             <!-- Progression Controls -->
-            <div class="mt-12 pt-8 border-t border-slate-800 flex items-center justify-between">
-                <button id="prev-btn" onclick="prevStep()" class="text-slate-400 hover:text-white font-serif italic text-lg transition-colors flex items-center gap-2 disabled:opacity-0 cursor-pointer">&larr; Previous</button>
-                <div class="h-1 flex-1 mx-4 bg-slate-800 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="h-full bg-sky-400 w-0 transition-all duration-500 shadow-[0_0_10px_rgba(56,189,248,0.5)]"></div>
+            <div class="mt-12 pt-8 border-t border-stone-200 flex items-center justify-between">
+                <button id="prev-btn" onclick="prevStep()" class="text-stone-400 hover:text-stone-900 font-serif italic text-lg transition-colors flex items-center gap-2 disabled:opacity-0 cursor-pointer">&larr; Previous</button>
+                <div class="h-1 flex-1 mx-4 bg-stone-200 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-[#b2945e] w-0 transition-all duration-500 shadow-[0_0_10px_rgba(178,148,94,0.5)]"></div>
                 </div>
-                <button id="next-btn" onclick="nextStep()" class="bg-white text-slate-900 px-8 py-3 rounded-full hover:bg-sky-400 hover:text-white transition-all font-sans text-xs font-bold tracking-[0.2em] uppercase shadow-lg transform hover:-translate-y-0.5">Next &rarr;</button>
+                <button id="next-btn" onclick="nextStep()" class="bg-stone-900 text-stone-50 px-8 py-3 rounded-full hover:bg-[#b2945e] hover:text-white transition-all font-sans text-xs font-bold tracking-[0.2em] uppercase shadow-lg transform hover:-translate-y-0.5">Next &rarr;</button>
             </div>
         </main>
     </div>
@@ -88,12 +90,45 @@
     <script>
         lucide.createIcons();
 
+        // --- AUDIO ENGINE ---
+        const decompressionAudio = new Audio('decompression.m4a');
+        let isAudioPlaying = false;
+
+        function toggleAudio() {
+            const btnText = document.getElementById('audio-text');
+            const btnIcon = document.getElementById('audio-icon');
+
+            if (isAudioPlaying) {
+                decompressionAudio.pause();
+                isAudioPlaying = false;
+                if(btnText) btnText.innerText = "Play Guided Audio (2:00)";
+                if(btnIcon) btnIcon.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5 text-[#b2945e]"></i>`;
+            } else {
+                decompressionAudio.play().catch(e => {
+                    alert("Audio file not found. Make sure 'decompression.m4a' is uploaded to your repository.");
+                });
+                isAudioPlaying = true;
+                if(btnText) btnText.innerText = "Pause Audio";
+                if(btnIcon) btnIcon.innerHTML = `<i data-lucide="pause-circle" class="w-5 h-5 text-[#b2945e]"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        decompressionAudio.onended = function() {
+            isAudioPlaying = false;
+            const btnText = document.getElementById('audio-text');
+            const btnIcon = document.getElementById('audio-icon');
+            if(btnText) btnText.innerText = "Play Guided Audio (2:00)";
+            if(btnIcon) btnIcon.innerHTML = `<i data-lucide="play-circle" class="w-5 h-5 text-[#b2945e]"></i>`;
+            lucide.createIcons();
+        };
+
         // --- SECURITY CIPHER ---
-        const PROTOCOL_CIPHER = "CLINICAL2026"; 
+        const VALID_CODES = ['ER-2026', 'ICU-2026', 'MED-2026', 'DEMO', 'MASTER', 'RPC-BETA']; 
 
         function unlockApp() {
             const input = document.getElementById('cipher-input').value.trim().toUpperCase();
-            if (input === PROTOCOL_CIPHER || input === "KINETIC2026") { 
+            if (VALID_CODES.includes(input)) { 
                 document.getElementById('enterprise-lock').style.opacity = '0';
                 setTimeout(() => {
                     document.getElementById('enterprise-lock').style.display = 'none';
@@ -129,19 +164,16 @@
             appState.entries[field] = value;
         }
 
-        // Updates the number value next to the slider dynamically
         function updateSliderValue(sliderId, displayId, field) {
             const val = document.getElementById(sliderId).value;
             document.getElementById(displayId).innerText = val;
             saveEntry(field, parseInt(val));
             
-            // If on the final page, instantly recalculate the Delta
             if(field === 'post_friction') {
                 calculateDelta();
             }
         }
 
-        // Calculates the mathematical difference between Pre and Post stress
         function calculateDelta() {
             const pre = appState.entries.pre_friction;
             const post = appState.entries.post_friction;
@@ -150,11 +182,11 @@
             
             if(display) {
                 if(delta < 0) {
-                    display.innerHTML = `<span class="text-green-400 font-bold">${delta} Points of Friction Metabolized</span>`;
+                    display.innerHTML = `<span class="text-teal-600 font-bold">${Math.abs(delta)} Points of Friction Metabolized</span>`;
                 } else if (delta === 0) {
-                    display.innerHTML = `<span class="text-slate-400 font-bold">Friction Baseline Maintained</span>`;
+                    display.innerHTML = `<span class="text-stone-500 font-bold">Friction Baseline Maintained</span>`;
                 } else {
-                    display.innerHTML = `<span class="text-red-400 font-bold">+${delta} Friction Increased</span>`;
+                    display.innerHTML = `<span class="text-rose-600 font-bold">+${delta} Friction Increased</span>`;
                 }
             }
         }
@@ -165,10 +197,10 @@
                 id: 'intro',
                 render: () => `
                     <div class="text-center space-y-8 mt-12">
-                        <span class="text-xs font-bold tracking-[0.3em] uppercase text-sky-400 border border-sky-400 px-3 py-1 rounded-full">Clinical Edition</span>
-                        <h2 class="text-4xl md:text-6xl font-serif italic text-white leading-none">Vital Sign<br>Protocol.</h2>
-                        <div class="w-16 h-1 bg-sky-400 mx-auto"></div>
-                        <p class="text-lg text-slate-400 font-serif leading-relaxed max-w-xl mx-auto">
+                        <span class="text-xs font-bold tracking-[0.3em] uppercase text-[#b2945e] border border-[#b2945e] px-3 py-1 rounded-full">Clinical Edition</span>
+                        <h2 class="text-4xl md:text-6xl font-serif italic text-stone-900 leading-none">Vital Sign<br>Protocol.</h2>
+                        <div class="w-16 h-1 bg-[#b2945e] mx-auto"></div>
+                        <p class="text-lg text-stone-600 font-serif leading-relaxed max-w-xl mx-auto">
                             Built for high-acuity medical and psychiatric teams. We maintain clinical safety without sacrificing empathy.
                         </p>
                     </div>`
@@ -180,41 +212,41 @@
                     const preVal = appState.entries.pre_friction;
                     return `
                     <div class="space-y-8 mt-6">
-                        <div class="border-b border-slate-700 pb-4">
-                            <h2 class="text-5xl font-serif italic text-white">The Triage</h2>
-                            <span class="text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">Phase 01</span>
+                        <div class="border-b border-stone-300 pb-4">
+                            <h2 class="text-5xl font-serif italic text-stone-900">The Triage</h2>
+                            <span class="text-xs font-bold uppercase tracking-widest text-[#b2945e] mb-2">Phase 01</span>
                         </div>
-                        <p class="font-serif text-xl text-slate-300 leading-relaxed">
+                        <p class="font-serif text-xl text-stone-700 leading-relaxed">
                             Quantify your friction and diagnose your current autonomic state before engaging with patients or colleagues.
                         </p>
                         
                         <!-- THE ENTRY SLIDER -->
-                        <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-sm">
+                        <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
                             <div class="flex justify-between items-end mb-4">
                                 <div>
-                                    <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-white">Friction Baseline</h3>
-                                    <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Quantify current somatic stress</p>
+                                    <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-stone-900">Friction Baseline</h3>
+                                    <p class="text-[10px] text-stone-500 uppercase tracking-widest mt-1">Quantify current somatic stress</p>
                                 </div>
-                                <div class="text-3xl font-serif italic text-sky-400" id="pre-val-display">${preVal}</div>
+                                <div class="text-3xl font-serif italic text-[#b2945e]" id="pre-val-display">${preVal}</div>
                             </div>
                             <input type="range" id="pre-slider" min="1" max="10" value="${preVal}" class="w-full" oninput="updateSliderValue('pre-slider', 'pre-val-display', 'pre_friction')">
-                            <div class="flex justify-between text-[10px] uppercase font-bold text-slate-500 mt-2">
+                            <div class="flex justify-between text-[10px] uppercase font-bold text-stone-400 mt-2">
                                 <span>1 (Regulated)</span>
                                 <span>10 (Overload)</span>
                             </div>
                         </div>
 
                         <!-- STATE SELECTOR -->
-                        <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 mt-6">
-                            <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Select Autonomic State (Required)</p>
+                        <div class="bg-stone-50 p-6 rounded-xl border border-stone-200 mt-6">
+                            <p class="text-xs font-bold uppercase tracking-widest text-stone-500 mb-4">Select Autonomic State (Required)</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <button onclick="setArousalState('Hyperarousal')" class="p-5 bg-slate-900 border rounded-lg transition-all text-left ${state === 'Hyperarousal' ? 'border-sky-400 bg-sky-400/10 ring-1 ring-sky-400' : 'border-slate-700 hover:border-slate-500'}">
-                                    <span class="block font-bold text-white mb-1">Hyperarousal (Sympathetic)</span>
-                                    <span class="text-xs text-slate-400">Racing heart, shallow breath, agitation, rushing. The "Fight or Flight" response.</span>
+                                <button onclick="setArousalState('Hyperarousal')" class="p-5 bg-white border rounded-lg transition-all text-left ${state === 'Hyperarousal' ? 'border-[#b2945e] bg-[#b2945e]/10 ring-1 ring-[#b2945e]' : 'border-stone-200 hover:border-stone-400'}">
+                                    <span class="block font-bold text-stone-900 mb-1">Hyperarousal (Sympathetic)</span>
+                                    <span class="text-xs text-stone-500">Racing heart, shallow breath, agitation, rushing. The "Fight or Flight" response.</span>
                                 </button>
-                                <button onclick="setArousalState('Hypoarousal')" class="p-5 bg-slate-900 border rounded-lg transition-all text-left ${state === 'Hypoarousal' ? 'border-sky-400 bg-sky-400/10 ring-1 ring-sky-400' : 'border-slate-700 hover:border-slate-500'}">
-                                    <span class="block font-bold text-white mb-1">Hypoarousal (Dorsal Vagal)</span>
-                                    <span class="text-xs text-slate-400">Numbness, fog, dissociation, exhaustion. The "Freeze or Fold" response.</span>
+                                <button onclick="setArousalState('Hypoarousal')" class="p-5 bg-white border rounded-lg transition-all text-left ${state === 'Hypoarousal' ? 'border-[#b2945e] bg-[#b2945e]/10 ring-1 ring-[#b2945e]' : 'border-stone-200 hover:border-stone-400'}">
+                                    <span class="block font-bold text-stone-900 mb-1">Hypoarousal (Dorsal Vagal)</span>
+                                    <span class="text-xs text-stone-500">Numbness, fog, dissociation, exhaustion. The "Freeze or Fold" response.</span>
                                 </button>
                             </div>
                         </div>
@@ -227,37 +259,50 @@
                     const state = appState.entries.arousal_state;
                     let protocolHtml = '';
 
+                    const iconHTML = isAudioPlaying 
+                        ? `<i data-lucide="pause-circle" class="w-5 h-5 text-[#b2945e]"></i>`
+                        : `<i data-lucide="play-circle" class="w-5 h-5 text-[#b2945e]"></i>`;
+                    const textHTML = isAudioPlaying
+                        ? "Pause Audio"
+                        : "Play Guided Audio (2:00)";
+
                     if (state === 'Hyperarousal') {
                         protocolHtml = `
-                            <div class="bg-red-900/20 border border-red-500/30 p-6 rounded-xl mb-6">
-                                <h3 class="text-red-400 font-bold text-xs uppercase tracking-widest mb-2">Diagnosis: Sympathetic Overdrive</h3>
-                                <p class="text-sm text-slate-300">Your system is flooded with cortisol. You cannot out-think this state; you must manually apply the biological brakes before entering the clinical space.</p>
+                            <div class="bg-rose-50 border border-rose-200 p-6 rounded-xl mb-6">
+                                <h3 class="text-rose-600 font-bold text-xs uppercase tracking-widest mb-2">Diagnosis: Sympathetic Overdrive</h3>
+                                <p class="text-sm text-stone-700">Your system is flooded with cortisol. You cannot out-think this state; you must manually apply the biological brakes before entering the clinical space.</p>
                             </div>
                             <div class="space-y-6">
-                                <div class="p-5 bg-slate-800 rounded-lg">
-                                    <h4 class="font-serif text-xl text-white mb-2">1. The 90-Second Flush</h4>
-                                    <p class="text-sm text-slate-400">Do not speak. Take a sharp double-inhale through the nose, followed by a long, slow sigh through the mouth. Repeat for 90 seconds to metabolize the chemical dump.</p>
+                                <div class="p-6 bg-white border border-stone-200 rounded-xl shadow-sm">
+                                    <h4 class="font-serif text-xl text-stone-900 mb-2">1. The 90-Second Flush</h4>
+                                    <p class="text-sm text-stone-500 mb-4">Do not speak. Take a sharp double-inhale through the nose, followed by a long, slow sigh through the mouth. Repeat for 90 seconds to metabolize the chemical dump.</p>
+                                    
+                                    <!-- AUDIO BUTTON -->
+                                    <button onclick="toggleAudio()" class="w-full bg-stone-50 text-stone-900 p-4 rounded-xl border border-stone-200 flex items-center justify-center gap-3 hover:bg-stone-100 transition-colors">
+                                        <span id="audio-icon">${iconHTML}</span>
+                                        <span id="audio-text" class="text-sm font-bold tracking-widest uppercase">${textHTML}</span>
+                                    </button>
                                 </div>
-                                <div class="p-5 bg-slate-800 rounded-lg">
-                                    <h4 class="font-serif text-xl text-white mb-2">2. Linear Override</h4>
-                                    <p class="text-sm text-slate-400">Panic operates in loops. Logic is a line. Name 3 physical objects in the room. State the exact time. Switch your brain from emotional computing to analytical computing.</p>
+                                <div class="p-6 bg-white border border-stone-200 rounded-xl shadow-sm">
+                                    <h4 class="font-serif text-xl text-stone-900 mb-2">2. Linear Override</h4>
+                                    <p class="text-sm text-stone-500">Panic operates in loops. Logic is a line. Name 3 physical objects in the room. State the exact time. Switch your brain from emotional computing to analytical computing.</p>
                                 </div>
                             </div>
                         `;
                     } else {
                         protocolHtml = `
-                            <div class="bg-blue-900/20 border border-blue-500/30 p-6 rounded-xl mb-6">
-                                <h3 class="text-blue-400 font-bold text-xs uppercase tracking-widest mb-2">Diagnosis: Dorsal Vagal Freeze</h3>
-                                <p class="text-sm text-slate-300">Your system has initiated a shutdown response to protect against perceived overwhelm. We need to gently up-regulate your nervous system back online.</p>
+                            <div class="bg-teal-50 border border-teal-200 p-6 rounded-xl mb-6">
+                                <h3 class="text-teal-600 font-bold text-xs uppercase tracking-widest mb-2">Diagnosis: Dorsal Vagal Freeze</h3>
+                                <p class="text-sm text-stone-700">Your system has initiated a shutdown response to protect against perceived overwhelm. We need to gently up-regulate your nervous system back online.</p>
                             </div>
                             <div class="space-y-6">
-                                <div class="p-5 bg-slate-800 rounded-lg">
-                                    <h4 class="font-serif text-xl text-white mb-2">1. The Somatic Anchor</h4>
-                                    <p class="text-sm text-slate-400">Change your physical temperature immediately. Splash cold water on your face or hold something freezing. This shocks the vagus nerve back into engagement.</p>
+                                <div class="p-6 bg-white border border-stone-200 rounded-xl shadow-sm">
+                                    <h4 class="font-serif text-xl text-stone-900 mb-2">1. The Somatic Anchor</h4>
+                                    <p class="text-sm text-stone-500">Change your physical temperature immediately. Splash cold water on your face or hold something freezing. This shocks the vagus nerve back into engagement.</p>
                                 </div>
-                                <div class="p-5 bg-slate-800 rounded-lg">
-                                    <h4 class="font-serif text-xl text-white mb-2">2. Micro-Commitment</h4>
-                                    <p class="text-sm text-slate-400">Do not look at the entire shift. Focus only on the next 5 minutes. Execute one single, microscopic task to prove to your brain that you possess agency.</p>
+                                <div class="p-6 bg-white border border-stone-200 rounded-xl shadow-sm">
+                                    <h4 class="font-serif text-xl text-stone-900 mb-2">2. Micro-Commitment</h4>
+                                    <p class="text-sm text-stone-500">Do not look at the entire shift. Focus only on the next 5 minutes. Execute one single, microscopic task to prove to your brain that you possess agency.</p>
                                 </div>
                             </div>
                         `;
@@ -265,9 +310,9 @@
 
                     return `
                     <div class="space-y-8 mt-6">
-                        <div class="border-b border-slate-700 pb-4">
-                            <h2 class="text-5xl font-serif italic text-white">The Intervention</h2>
-                            <span class="text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">Phase 02</span>
+                        <div class="border-b border-stone-300 pb-4">
+                            <h2 class="text-5xl font-serif italic text-stone-900">The Intervention</h2>
+                            <span class="text-xs font-bold uppercase tracking-widest text-[#b2945e] mb-2">Phase 02</span>
                         </div>
                         ${protocolHtml}
                     </div>`
@@ -282,42 +327,42 @@
 
                     return `
                     <div class="space-y-8 mt-6">
-                        <div class="border-b border-slate-700 pb-4">
-                            <h2 class="text-5xl font-serif italic text-white">The Scrub-In</h2>
-                            <span class="text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">Phase 03</span>
+                        <div class="border-b border-stone-300 pb-4">
+                            <h2 class="text-5xl font-serif italic text-stone-900">The Scrub-In</h2>
+                            <span class="text-xs font-bold uppercase tracking-widest text-[#b2945e] mb-2">Phase 03</span>
                         </div>
-                        <p class="font-serif text-xl text-slate-300 leading-relaxed mb-8">
+                        <p class="font-serif text-xl text-stone-700 leading-relaxed mb-8">
                             Surgeons wash their hands before touching a patient. You must wash your mind. Execute the scrub-in ritual and quantify your shift.
                         </p>
 
                         <!-- THE SCRUB-IN RITUAL -->
-                        <div class="bg-slate-800 border border-slate-700 p-8 rounded-xl relative overflow-hidden mb-8">
-                            <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-white block mb-4">Psychological Boundary</h3>
+                        <div class="bg-stone-900 text-stone-50 p-8 rounded-2xl relative overflow-hidden mb-8 shadow-xl">
+                            <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-[#b2945e] block mb-6">Psychological Boundary</h3>
                             <div class="space-y-6">
                                 <div>
-                                    <span class="font-serif text-2xl text-slate-400">I acknowledge my friction is currently:</span>
-                                    <p class="font-serif text-2xl text-white mt-1 border-b border-slate-600 pb-2">${state}</p>
+                                    <span class="font-serif text-2xl text-stone-400">I acknowledge my friction is currently:</span>
+                                    <p class="font-serif text-2xl text-white mt-1 border-b border-stone-700 pb-2">${state}</p>
                                 </div>
                                 <div>
-                                    <span class="font-serif text-2xl text-slate-400">But I am stepping into the clinical space. My sovereign action is to:</span>
-                                    <input type="text" oninput="saveEntry('somatic_anchor', this.value)" value="${appState.entries.somatic_anchor}" class="bg-transparent border-b border-slate-600 w-full font-serif text-2xl text-sky-400 focus:outline-none focus:border-sky-400 p-1 mt-2" placeholder="maintain absolute presence...">
+                                    <span class="font-serif text-2xl text-stone-400">But I am stepping into the clinical space. My sovereign action is to:</span>
+                                    <input type="text" oninput="saveEntry('somatic_anchor', this.value)" value="${appState.entries.somatic_anchor}" class="bg-transparent border-b border-stone-700 w-full font-serif text-2xl text-[#b2945e] focus:outline-none focus:border-[#b2945e] p-1 mt-2" placeholder="maintain absolute presence...">
                                 </div>
                             </div>
                         </div>
 
                         <!-- THE EXIT SLIDER & METRICS -->
-                        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-sm mb-8">
+                        <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm mb-8">
                             <div class="flex justify-between items-end mb-4">
                                 <div>
-                                    <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-white">Post-Protocol Audit</h3>
-                                    <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">Re-evaluate your somatic state</p>
+                                    <h3 class="font-sans text-xs font-bold uppercase tracking-widest text-stone-900">Post-Protocol Audit</h3>
+                                    <p class="text-[10px] text-stone-500 uppercase tracking-widest mt-1">Re-evaluate your somatic state</p>
                                 </div>
-                                <div class="text-3xl font-serif italic text-sky-400" id="post-val-display">${postVal}</div>
+                                <div class="text-3xl font-serif italic text-[#b2945e]" id="post-val-display">${postVal}</div>
                             </div>
                             <input type="range" id="post-slider" min="1" max="10" value="${postVal}" class="w-full mb-6" oninput="updateSliderValue('post-slider', 'post-val-display', 'post_friction')">
                             
-                            <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
-                                <span class="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Entry Baseline: ${preVal}</span>
+                            <div class="pt-4 border-t border-stone-100 flex justify-between items-center">
+                                <span class="text-[10px] uppercase font-bold text-stone-400 tracking-widest">Entry Baseline: ${preVal}</span>
                                 <div id="delta-display" class="text-sm font-sans uppercase tracking-widest">
                                     <!-- Populated by JS -->
                                 </div>
@@ -338,7 +383,6 @@
             contentDiv.innerHTML = step.render();
             contentDiv.classList.add('slide-in-right');
 
-            // Trigger Delta Calculation immediately if on final page
             if (appState.currentStep === contentMap.length - 1) {
                 calculateDelta();
             }
