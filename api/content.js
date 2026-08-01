@@ -14,6 +14,12 @@
 // protocol will not load, even with a correct cipher — DEVMODE continues to
 // work in non-production deployments regardless, so local testing isn't
 // blocked.
+//
+// Sessions are stored client-side in localStorage (not sessionStorage) so a
+// buyer stays logged in on a given device across tabs/restarts for up to a
+// year, whether they got in via the manual cipher or a Lemon Squeezy license
+// key (see api/authenticate.js) — a new device still needs one of those
+// entered once.
 
 const crypto = require('crypto');
 
@@ -36,7 +42,7 @@ function isValidSessionToken(token) {
   if (sigBuf.length !== expBuf.length) return false;
   if (!crypto.timingSafeEqual(sigBuf, expBuf)) return false;
 
-  const MAX_AGE_MS = 24 * 60 * 60 * 1000; // sessions are valid for 24 hours
+  const MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000; // sessions are remembered for a year
   const age = Date.now() - Number(issuedAt);
   return age >= 0 && age <= MAX_AGE_MS;
 }

@@ -49,8 +49,8 @@
         <div class="lock-container">
             <div class="lock-logo">A</div>
             <div class="lock-title">Vital Sign Protocol</div>
-            <div class="lock-desc">Clinical Edition. Enter your unit access cipher.</div>
-            <input type="password" id="cipher-input" class="lock-input" placeholder="ENTER CIPHER">
+            <div class="lock-desc">Clinical Edition. Enter your unit access cipher or license key.</div>
+            <input type="password" id="cipher-input" class="lock-input" placeholder="CIPHER OR LICENSE KEY">
             <button onclick="unlockApp()" class="lock-btn">Authenticate</button>
             <div id="lock-error" class="lock-error">INVALID CIPHER. ACCESS DENIED.</div>
         </div>
@@ -147,7 +147,7 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    sessionStorage.setItem('vsp_session_token', data.token);
+                    localStorage.setItem('vsp_session_token', data.token);
                     await loadProtocolContent();
                 } else {
                     errEl.innerText = 'INVALID CIPHER. ACCESS DENIED.';
@@ -169,7 +169,7 @@
 
         async function loadProtocolContent() {
             const errEl = document.getElementById('lock-error');
-            const token = sessionStorage.getItem('vsp_session_token');
+            const token = localStorage.getItem('vsp_session_token');
             try {
                 const res = await fetch('/api/content', {
                     headers: { 'X-Session-Token': token || '' }
@@ -179,7 +179,7 @@
                 if (!res.ok) {
                     errEl.innerText = data.error || 'Could not load the protocol.';
                     errEl.style.display = 'block';
-                    if (res.status === 401) sessionStorage.removeItem('vsp_session_token');
+                    if (res.status === 401) localStorage.removeItem('vsp_session_token');
                     return;
                 }
 
@@ -199,7 +199,7 @@
 
         // Existing session on this device — skip straight to loading content.
         (function checkExistingSession() {
-            if (sessionStorage.getItem('vsp_session_token')) {
+            if (localStorage.getItem('vsp_session_token')) {
                 loadProtocolContent();
             }
         })();
