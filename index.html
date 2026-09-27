@@ -13,23 +13,7 @@
         .font-serif { font-family: 'Cormorant Garamond', serif; }
         .blueprint-dot { background-image: radial-gradient(circle at 1px 1px, #e7e5e4 1px, transparent 0); background-size: 30px 30px; }
         
-        /* --- SECURITY LOCK SCREEN --- */
-        #enterprise-lock {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #020617; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 999999; transition: opacity 0.5s ease;
-        }
-        .lock-container { background: #0f172a; border: 1px solid #1e293b; padding: 40px; border-radius: 16px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .lock-logo { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 32px; font-style: italic; margin-bottom: 15px; }
-        .lock-title { color: white; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-        .lock-desc { color: #94a3b8; font-size: 12px; margin-bottom: 24px; line-height: 1.5; }
-        .lock-input { width: 100%; padding: 14px; background: #020617; border: 1px solid #334155; color: white; border-radius: 8px; margin-bottom: 16px; text-align: center; letter-spacing: 3px; font-family: monospace; font-size: 16px; outline: none; }
-        .lock-input:focus { border-color: var(--gold); }
-        .lock-btn { width: 100%; background: var(--gold); color: #020617; font-weight: bold; border: none; padding: 14px; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; transition: all 0.2s; }
-        .lock-btn:hover { background: #d97706; color: white; }
-        .lock-error { color: #f43f5e; font-size: 11px; margin-top: 12px; display: none; font-weight: bold; letter-spacing: 1px;}
-        
-        #main-app-content { display: none; animation: fadeIn 0.8s ease; }
+        #main-app-content { animation: fadeIn 0.8s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Custom Range Slider matching LiveAdaptiv Brand */
@@ -43,18 +27,6 @@
     </style>
 </head>
 <body class="blueprint-dot">
-
-    <!-- SECURITY LOCK -->
-    <div id="enterprise-lock">
-        <div class="lock-container">
-            <div class="lock-logo">A</div>
-            <div class="lock-title">Vital Sign Protocol</div>
-            <div class="lock-desc">Clinical Edition. Enter your unit access cipher or license key.</div>
-            <input type="password" id="cipher-input" class="lock-input" placeholder="CIPHER OR LICENSE KEY">
-            <button onclick="unlockApp()" class="lock-btn">Authenticate</button>
-            <div id="lock-error" class="lock-error">INVALID CIPHER. ACCESS DENIED.</div>
-        </div>
-    </div>
 
     <!-- MAIN APP -->
     <div id="main-app-content" class="min-h-screen flex flex-col">
@@ -123,86 +95,60 @@
             lucide.createIcons();
         };
 
-        // --- SECURITY CIPHER — verified server-side, see api/authenticate.js.
-        // The protocol text itself is fetched from api/content.js only after
-        // that verification succeeds; it is not present in this page's source.
-        let content = null;
-
-        async function unlockApp() {
-            const input = document.getElementById('cipher-input').value.trim();
-            const btn = document.querySelector('.lock-btn');
-            const errEl = document.getElementById('lock-error');
-            if (!input) return;
-
-            btn.disabled = true;
-            btn.innerText = 'Verifying...';
-            errEl.style.display = 'none';
-
-            try {
-                const res = await fetch('/api/authenticate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cipher: input })
-                });
-                const data = await res.json();
-
-                if (data.success) {
-                    localStorage.setItem('vsp_session_token', data.token);
-                    await loadProtocolContent();
-                } else {
-                    errEl.innerText = 'INVALID CIPHER. ACCESS DENIED.';
-                    errEl.style.display = 'block';
-                    document.getElementById('cipher-input').value = '';
-                }
-            } catch (e) {
-                console.warn('Authentication communication error:', e);
-                errEl.innerText = 'CONNECTION ERROR. TRY AGAIN.';
-                errEl.style.display = 'block';
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Authenticate';
+        // --- PROTOCOL CONTENT ---
+        const content = {
+          intro: {
+            badge: 'Clinical Edition',
+            title: 'Vital Sign<br>Protocol.',
+            body: 'Built for high-acuity medical and psychiatric teams. We maintain clinical safety without sacrificing empathy.'
+          },
+          assessment: {
+            phase: 'Phase 01',
+            title: 'The Triage',
+            body: 'Quantify your friction and diagnose your current autonomic state before engaging with patients or colleagues.',
+            sliderLabel: 'Friction Baseline',
+            sliderSub: 'Quantify current somatic stress',
+            sliderMinLabel: '1 (Regulated)',
+            sliderMaxLabel: '10 (Overload)',
+            statePrompt: 'Select Autonomic State (Required)',
+            hyperarousalLabel: 'Hyperarousal (Sympathetic)',
+            hyperarousalDesc: 'Racing heart, shallow breath, agitation, rushing. The "Fight or Flight" response.',
+            hypoarousalLabel: 'Hypoarousal (Dorsal Vagal)',
+            hypoarousalDesc: 'Numbness, fog, dissociation, exhaustion. The "Freeze or Fold" response.'
+          },
+          protocol: {
+            phase: 'Phase 02',
+            title: 'The Intervention',
+            hyperarousal: {
+              diagnosisTitle: 'Diagnosis: Sympathetic Overdrive',
+              diagnosisBody: 'Your system is flooded with cortisol. You cannot out-think this state; you must manually apply the biological brakes before entering the clinical space.',
+              step1Title: '1. The 90-Second Flush',
+              step1Body: 'Do not speak. Take a sharp double-inhale through the nose, followed by a long, slow sigh through the mouth. Repeat for 90 seconds to metabolize the chemical dump.',
+              step2Title: '2. Linear Override',
+              step2Body: 'Panic operates in loops. Logic is a line. Name 3 physical objects in the room. State the exact time. Switch your brain from emotional computing to analytical computing.'
+            },
+            hypoarousal: {
+              diagnosisTitle: 'Diagnosis: Dorsal Vagal Freeze',
+              diagnosisBody: 'Your system has initiated a shutdown response to protect against perceived overwhelm. We need to gently up-regulate your nervous system back online.',
+              step1Title: '1. The Somatic Anchor',
+              step1Body: 'Change your physical temperature immediately. Splash cold water on your face or hold something freezing. This shocks the vagus nerve back into engagement.',
+              step2Title: '2. Micro-Commitment',
+              step2Body: 'Do not look at the entire shift. Focus only on the next 5 minutes. Execute one single, microscopic task to prove to your brain that you possess agency.'
             }
-        }
-        document.getElementById('cipher-input').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') unlockApp();
-        });
-
-        async function loadProtocolContent() {
-            const errEl = document.getElementById('lock-error');
-            const token = localStorage.getItem('vsp_session_token');
-            try {
-                const res = await fetch('/api/content', {
-                    headers: { 'X-Session-Token': token || '' }
-                });
-                const data = await res.json();
-
-                if (!res.ok) {
-                    errEl.innerText = data.error || 'Could not load the protocol.';
-                    errEl.style.display = 'block';
-                    if (res.status === 401) localStorage.removeItem('vsp_session_token');
-                    return;
-                }
-
-                content = data.content;
-                document.getElementById('enterprise-lock').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('enterprise-lock').style.display = 'none';
-                    document.getElementById('main-app-content').style.display = 'flex';
-                    renderStep();
-                }, 500);
-            } catch (e) {
-                console.error('Failed to load protocol content:', e);
-                errEl.innerText = 'CONNECTION ERROR. TRY AGAIN.';
-                errEl.style.display = 'block';
-            }
-        }
-
-        // Existing session on this device — skip straight to loading content.
-        (function checkExistingSession() {
-            if (localStorage.getItem('vsp_session_token')) {
-                loadProtocolContent();
-            }
-        })();
+          },
+          output: {
+            phase: 'Phase 03',
+            title: 'The Scrub-In',
+            body: 'Surgeons wash their hands before touching a patient. You must wash your mind. Execute the scrub-in ritual and quantify your shift.',
+            boundaryLabel: 'Psychological Boundary',
+            acknowledgeLabel: 'I acknowledge my friction is currently:',
+            actionLabel: 'But I am stepping into the clinical space. My sovereign action is to:',
+            actionPlaceholder: 'maintain absolute presence...',
+            auditLabel: 'Post-Protocol Audit',
+            auditSub: 'Re-evaluate your somatic state',
+            baselineLabel: 'Entry Baseline:'
+          }
+        };
 
         // --- DATA & STATE ---
         let appState = {
@@ -499,6 +445,8 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
+
+        renderStep();
     </script>
 </body>
 </html>
