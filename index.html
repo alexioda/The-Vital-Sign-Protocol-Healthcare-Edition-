@@ -8,78 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <script>
-        /* =========================================================
-           ACCESS GATE
-           Codes live only in the VITALS_CODES env var on Vercel and are
-           checked by /api/verify-code. Nothing secret ships in this page.
-           window.ACTIVE_CODE is set after a valid check; presenter mode
-           uses it to build the join QR URL.
-           ========================================================= */
-        const LICENSE_KEY = 'vitals_license';
-
-        // Resolves true/false from the server, or null if the check couldn't run.
-        async function verifyCode(code) {
-            if (!code) return false;
-            try {
-                const r = await fetch('/api/verify-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ code: code })
-                });
-                if (r.status === 429) return false;
-                if (!r.ok) return null;
-                const data = await r.json();
-                return data && data.valid === true;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function showApp(valid) {
-            document.getElementById('app-interface').style.display = valid ? 'flex' : 'none';
-            document.getElementById('lock-screen').style.display = valid ? 'none' : 'flex';
-        }
-
-        document.addEventListener("DOMContentLoaded", async function () {
-            const urlParam = new URLSearchParams(window.location.search).get('license');
-            const urlCode = urlParam ? urlParam.trim().toUpperCase() : '';
-            let stored = null;
-            try { stored = localStorage.getItem(LICENSE_KEY); } catch (e) {}
-
-            let active = null;
-            const urlResult = urlCode ? await verifyCode(urlCode) : false;
-            if (urlResult === true) {
-                active = urlCode;
-                try { localStorage.setItem(LICENSE_KEY, urlCode); } catch (e) {}
-            } else if (stored) {
-                const res = stored === urlCode ? urlResult : await verifyCode(stored);
-                // A code this device already verified stays usable if the
-                // network drops mid-workshop; a definite "no" clears it.
-                if (res === true || res === null) active = stored;
-                else { try { localStorage.removeItem(LICENSE_KEY); } catch (e) {} }
-            }
-
-            window.ACTIVE_CODE = active;
-            showApp(!!active);
-            if (active && typeof initPresenter === 'function') initPresenter();
-        });
-
-        async function unlockSystem() {
-            const input = document.getElementById('manualCode').value.trim().toUpperCase();
-            const btn = document.getElementById('unlock-btn');
-            document.getElementById('error-msg').classList.add('hidden');
-            if (btn) btn.disabled = true;
-            const valid = input ? await verifyCode(input) : false;
-            if (btn) btn.disabled = false;
-            if (valid === true) {
-                try { localStorage.setItem(LICENSE_KEY, input); } catch (e) {}
-                location.reload();
-            } else {
-                document.getElementById('error-msg').classList.remove('hidden');
-            }
-        }
-    </script>
 
     <script>
         /* LiveAdaptiv tokens: same values as Sovereign and the Alchemist Field Guide.
@@ -172,25 +100,8 @@
 </head>
 <body class="blueprint-dot bg-stone-50 text-stone-900 font-sans antialiased">
 
-    <!-- LOCK SCREEN -->
-    <div id="lock-screen" style="display:none; background-image: radial-gradient(rgba(178, 148, 94, 0.08) 1px, transparent 1px); background-size: 30px 30px;" class="on-dark flex-col items-center justify-center bg-stone-900 text-white h-screen w-full px-6">
-        <div class="flex flex-col items-center gap-3 mb-10">
-            <div class="w-14 h-14 border border-gold/50 rounded-full flex items-center justify-center" aria-hidden="true">
-                <span class="font-serif italic text-3xl text-gold pb-1">A</span>
-            </div>
-            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-400">LiveAdaptiv</span>
-        </div>
-        <h1 class="font-serif italic text-5xl mb-3 text-center text-stone-50">Unit locked</h1>
-        <p class="text-stone-400 text-sm mb-10 text-center">Enter your unit code to open the protocol.</p>
-        <div class="w-full max-w-sm">
-            <input type="text" id="manualCode" placeholder="Unit code" onkeydown="if(event.key==='Enter')unlockSystem()" class="w-full p-4 border border-stone-700 bg-stone-800 text-white font-semibold text-center tracking-[0.3em] rounded-full mb-4 focus:outline-none focus:border-gold placeholder-stone-500 uppercase">
-            <button id="unlock-btn" onclick="unlockSystem()" class="btn-gold w-full py-4">Open protocol</button>
-            <p id="error-msg" class="text-rose-300 text-sm text-center mt-4 hidden">That code isn't active. Check with your team lead.</p>
-        </div>
-    </div>
-
     <!-- APP -->
-    <div id="app-interface" style="display:none" class="h-screen flex-col md:flex-row overflow-hidden w-full">
+    <div id="app-interface" class="h-screen flex-col md:flex-row overflow-hidden w-full">
 
         <!-- MOBILE HEADER -->
         <div class="md:hidden bg-stone-50/95 backdrop-blur border-b border-stone-200 z-50 flex-shrink-0 relative">
@@ -811,7 +722,7 @@
            Fails silently; the summary card is the manual fallback.
            ========================================================= */
         function submitSession() {
-            if (PRESENTING || !window.ACTIVE_CODE) return;
+            if (PRESENTING) return;
             const payload = {
                 session_id: session.id,
                 started_at: session.startedAt,
@@ -827,7 +738,7 @@
             try {
                 fetch('/api/vitals', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-License-Code': window.ACTIVE_CODE },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                     keepalive: true
                 }).catch(() => {});
@@ -838,7 +749,7 @@
 
         /* =========================================================
            PRESENTER MODE
-           Open with ?mode=present (plus the unit code) on the projector.
+           Open with ?mode=present on the projector.
            Hides every private input, enlarges the layout, shows a join QR,
            and adds on-screen + keyboard navigation (← → , Q, Esc).
            Participants scan the QR and run the normal version on their phones.
@@ -846,8 +757,7 @@
         const PRESENTING = new URLSearchParams(window.location.search).get('mode') === 'present';
 
         function joinUrl() {
-            const base = window.location.origin + window.location.pathname;
-            return window.ACTIVE_CODE ? `${base}?license=${encodeURIComponent(window.ACTIVE_CODE)}` : base;
+            return window.location.origin + window.location.pathname;
         }
 
         function renderQR(targetId, urlId, size) {
@@ -889,6 +799,10 @@
                 if (e.key === 'Escape') document.getElementById('qr-overlay').classList.remove('open');
             });
         }
+
+        // No access code: the page opens directly. Clear the code older versions stored.
+        try { localStorage.removeItem('vitals_license'); } catch (e) {}
+        initPresenter();
     </script>
 </body>
 </html>

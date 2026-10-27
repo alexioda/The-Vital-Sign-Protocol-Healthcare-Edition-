@@ -2,16 +2,16 @@
 // POST one completed session → private Vercel Blob at
 //   vitals/{YYYY-MM-DD}/{session_id}-{random}.json
 //
-// Requires an active unit code in the X-License-Code header.
+// Open to the page with no access code: same-origin check, per-IP rate limit,
+// and strict validation keep junk out.
 // Accepts ONLY the fields in FIELDS; anything else in the body is dropped.
 // Every value is type- and range-checked, and strings must match a fixed
 // enum or format, so free text can never be written even if a client sends it.
 
 const { put } = require('@vercel/blob');
-const { FIELDS, isActiveCode, clientIp, sameOrigin, readJson, makeLimiter } = require('./_lib/shared');
+const { FIELDS, clientIp, sameOrigin, readJson, makeLimiter } = require('./_lib/shared');
 
 const posts = makeLimiter(120, 10 * 60 * 1000); // 120 sessions / 10 min / IP
-const badCodes = makeLimiter(15, 10 * 60 * 1000);
 
 const STATES = ['', 'Hyperarousal', 'Hypoarousal'];
 const DRIVERS = ['', 'Perfectionist', 'Over-Committer', 'Imposter'];
@@ -53,11 +53,6 @@ module.exports = async function handler(req, res) {
   if (!sameOrigin(req)) return res.status(403).json({ ok: false });
 
   const ip = clientIp(req);
-  if (badCodes.blocked(ip)) return res.status(429).json({ ok: false });
-  if (!isActiveCode(req.headers['x-license-code'])) {
-    badCodes.hit(ip);
-    return res.status(401).json({ ok: false });
-  }
   if (posts.hit(ip)) return res.status(429).json({ ok: false });
 
   let body;

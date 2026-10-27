@@ -3,50 +3,12 @@
 // underscore keeps Vercel from deploying this folder as an endpoint.
 //
 // Env vars (Vercel → Project → Settings → Environment Variables):
-//   VITALS_CODES           JSON map of unit code → expiry date, e.g.
-//                          {"RPC_STAFF":"2030-01-01","DEMO":"2026-12-31"}
-//                          A code works until 00:00 UTC on its expiry date.
 //   ADMIN_KEY              Long random string for /api/vitals-export.
 //   BLOB_READ_WRITE_TOKEN  Added automatically when a Blob store is
 //                          connected to the project.
-// Never commit codes or keys to the repo.
+// Never commit keys to the repo.
 
 const crypto = require('crypto');
-
-/* ---------------- access codes ---------------- */
-
-function loadCodes() {
-  const raw = process.env.VITALS_CODES;
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
-    const out = {};
-    for (const [k, v] of Object.entries(parsed)) {
-      if (typeof k === 'string' && typeof v === 'string') out[k.trim().toUpperCase()] = v.trim();
-    }
-    return out;
-  } catch (e) {
-    console.error('[vitals] VITALS_CODES is not valid JSON');
-    return {};
-  }
-}
-
-function normalizeCode(code) {
-  if (typeof code !== 'string') return '';
-  const c = code.trim().toUpperCase();
-  return c.length > 0 && c.length <= 64 ? c : '';
-}
-
-function isActiveCode(code) {
-  const c = normalizeCode(code);
-  if (!c) return false;
-  const codes = loadCodes();
-  if (!Object.prototype.hasOwnProperty.call(codes, c)) return false;
-  const expires = new Date(codes[c]);
-  if (isNaN(expires.getTime())) return false;
-  return expires > new Date();
-}
 
 /* ---------------- request helpers ---------------- */
 
@@ -127,4 +89,4 @@ const FIELDS = [
   'delta', 'arousal_state', 'driver', 'lens', 'source'
 ];
 
-module.exports = { FIELDS, isActiveCode, normalizeCode, clientIp, sameOrigin, readJson, safeEqual, makeLimiter };
+module.exports = { FIELDS, clientIp, sameOrigin, readJson, safeEqual, makeLimiter };
