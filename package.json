@@ -1,0 +1,8 @@
+{
+  "name": "vital-sign-protocol",
+  "private": true,
+  "description": "The Vital Sign Protocol: static page plus Vercel functions in api/",
+  "dependencies": {
+    "@vercel/blob": "^2.8.0"
+  }
+}
