@@ -266,7 +266,7 @@
                             <ol id="proto-text" class="text-base leading-relaxed mb-6 text-stone-200 space-y-2 list-decimal list-inside marker:text-gold"></ol>
                             <div id="flush-audio" class="hidden mb-6 text-center">
                                 <button id="audio-btn" type="button" onclick="toggleAudio()" aria-pressed="false" class="inline-flex items-center gap-2 border border-gold/50 text-gold-soft px-5 py-2 rounded-full font-semibold text-sm hover:bg-stone-800 transition-colors">
-                                    <span id="audio-icon" aria-hidden="true">▶</span><span id="audio-text">Play guided audio (2:00)</span>
+                                    <span id="audio-icon" aria-hidden="true">▶</span><span id="audio-text">Play guided audio (1:30)</span>
                                 </button>
                             </div>
                             <div class="text-center"><button onclick="nextPage()" class="btn-gold px-6 py-3">Hardware stable, continue</button></div>
@@ -605,7 +605,7 @@
 
         function setAudioButton(playing) {
             document.getElementById('audio-icon').innerText = playing ? '❚❚' : '▶';
-            document.getElementById('audio-text').innerText = playing ? 'Pause audio' : 'Play guided audio (2:00)';
+            document.getElementById('audio-text').innerText = playing ? 'Pause audio' : 'Play guided audio (1:30)';
             document.getElementById('audio-btn').setAttribute('aria-pressed', playing ? 'true' : 'false');
         }
 
